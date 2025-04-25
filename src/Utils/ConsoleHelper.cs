@@ -6,9 +6,27 @@ namespace Utils;
 
 public static class ConsoleHelper
 {
-    public static void Print(string message)
+
+    /// <summary>
+    /// Prints a message to the console.
+    /// </summary>
+    /// <param name="message"></param>
+    private static void Print(string message)
     {
         Console.WriteLine(message);
+    }
+
+    /// <summary>
+    /// Prints a message to the console, ensuring that it is not null or empty.
+    /// </summary>
+    /// <param name="message"></param>
+    public static void Print(object message)
+    {
+        if (message != null && message.GetType() != typeof(string)) message = message.ToString() ?? string.Empty;
+
+        if ((message as string) == string.Empty) return;
+
+        if (message != null) Print(message);
     }
 
     public static void ClearConsole() { Console.Clear(); }
