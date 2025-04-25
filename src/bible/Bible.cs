@@ -65,9 +65,44 @@ public class Book
 
     public static Book GetBook(BibleBooks bookName)
     {
-
         return new Book(bookName);
     }
+
+    /// <summary>
+    /// Gets the number of chapters in the book.
+    /// </summary>
+    /// <param name="chapter"></param>
+    /// <param name="verse"></param>
+    /// <returns></returns>
+    public string GetVerse(int chapter, int verse)
+    {
+        try
+        {
+            if (chapter < 1 || chapter > chapters.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(chapter), "Chapter number is out of range.");
+            }
+
+            if (verse < 1 || verse > chapters[chapter - 1].Verses.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(verse), "Verse number is out of range.");
+            }
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            LogError(ex.Message);
+            return string.Empty;
+        }
+
+        return chapters[chapter - 1].Verses[verse - 1].Text;
+    }
+
+    public override string ToString()
+    {
+        return $"{Name} - {chapters.Count} chapters";
+    }
+
+
 
 
     private class Chapter
