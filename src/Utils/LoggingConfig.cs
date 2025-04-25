@@ -12,12 +12,22 @@ public static class LoggingConfig
 {
     public static ILoggerFactory? _loggerFactory;
 
-    public static ServiceProvider ConfigureLogging(bool enableFileLogging = true)
+    public static ServiceProvider ConfigureLogging(bool enableFileLogging = true, bool enanbleConsoleLogging = true)
     {
+
+
+        string environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+                         ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                         ?? "Production";
+
+        bool isDevelopment = environmentName.Equals("Development", StringComparison.OrdinalIgnoreCase);
+        string logsDirectory = "logs";
         // Ensure logs directory exists
         if (enableFileLogging)
         {
-            Directory.CreateDirectory("logs");
+            Directory.CreateDirectory(logsDirectory);
+
+            CheckDeleteLogs(logsDirectory);
         }
 
         // Use safe filename without colons
@@ -25,6 +35,15 @@ public static class LoggingConfig
 
         // Configure Serilog
         LoggerConfiguration? loggerConfig = new LoggerConfiguration();
+
+        if (isDevelopment)
+        {
+            loggerConfig.MinimumLevel.Debug(); // Enable Debug logs in Development
+        }
+        else
+        {
+            loggerConfig.MinimumLevel.Information(); // Disable Debug logs in Production
+        }
 
         if (enableFileLogging)
         {
@@ -48,20 +67,52 @@ public static class LoggingConfig
             builder.AddSerilog(dispose: true);
 
             // Configure console logging with custom formatter
-            builder.AddConsole(options =>
+            if (enanbleConsoleLogging)
             {
-                options.FormatterName = "CustomFormatter";
-            })
-            .AddConsoleFormatter<CustomFormatter, ConsoleFormatterOptions>(options =>
+                builder.AddConsole(options =>
+                {
+                    options.FormatterName = "CustomFormatter";
+                })
+                .AddConsoleFormatter<CustomFormatter, ConsoleFormatterOptions>(options =>
+                {
+                    options.TimestampFormat = "HH:mm:ss ";
+                    options.IncludeScopes = false;
+                });
+            }
+
+            // Set log level for console logging based on environment
+            if (isDevelopment)
             {
-                options.TimestampFormat = "HH:mm:ss ";
-                options.IncludeScopes = false;
-            });
+                builder.SetMinimumLevel(LogLevel.Debug); // Enable Debug logs in Development
+            }
+            else
+            {
+                builder.SetMinimumLevel(LogLevel.Information); // Disable Debug logs in Production
+            }
         });
 
         ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
         _loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+        LogInfo($"Logging configured. Environment: {environmentName}");
         return serviceProvider;
+    }
+
+    private static void CheckDeleteLogs(string logsDirectory)
+    {
+        // Delete old logs if there are more than 25
+        var logFiles = Directory.GetFiles(logsDirectory, "*.txt")
+                                .OrderBy(File.GetCreationTime)
+                                .ToList();
+
+        if (logFiles.Count > 25)
+        {
+            int filesToDelete = logFiles.Count - 25;
+            for (int i = 0; i < filesToDelete; i++)
+            {
+                File.Delete(logFiles[i]);
+            }
+        }
     }
 
     public static ILogger<T> GetLogger<T>()
@@ -105,9 +156,6 @@ public sealed class CustomFormatter : ConsoleFormatter, IDisposable
         // Get colored log level
         string logLevel = GetColoredLogLevel(logEntry.LogLevel);
 
-        // Get caller information
-        var callerInfo = GetCallerInfo();
-
         // Format: [HH:mm:ss] [info] (File.cs:123) message
         textWriter.WriteLine($"{timestamp}{logLevel} {message}");
 
@@ -115,29 +163,6 @@ public sealed class CustomFormatter : ConsoleFormatter, IDisposable
         {
             textWriter.WriteLine($"\n{logEntry.Exception}");
         }
-    }
-
-    private (string File, int Line) GetCallerInfo()
-    {
-        var stackTrace = new StackTrace(true);
-        foreach (var frame in stackTrace.GetFrames())
-        {
-            var method = frame?.GetMethod();
-            var declaringType = method?.DeclaringType;
-
-            // Skip logging framework and utility classes
-            if (declaringType == null ||
-                declaringType.FullName?.Contains("Microsoft.Extensions.Logging") == true ||
-                declaringType.FullName?.Contains("Utils.LoggingConfig") == true ||
-                declaringType.FullName?.Contains("Utils.ConsoleHelper") == true)
-            {
-                continue;
-            }
-
-            var file = Path.GetFileName(frame!.GetFileName()) ?? "unknown";
-            return (file, frame.GetFileLineNumber());
-        }
-        return ("unknown", 0);
     }
 
     private string GetColoredLogLevel(LogLevel logLevel)

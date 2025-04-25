@@ -6,21 +6,24 @@ class Program
 {
     static void Main()
     {
-        ConfigureLogging(false);
 
-        Book.GetBook(BibleBooks.Genesis);
-        LogInfo("Hello World!");
+        Console.Clear(); // Add blank line if needed
+        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+        ConfigureLogging(true, false);
+        // Right after ConfigureLogging
+
+        // Book.GetBook(BibleBooks.Genesis);
+
         // string verse = "In the beginning God created the heavens and the earth,";
         // string userInput = "";
 
-        // Console.Clear();
 
 
         // // Display the verse
-        // Console.WriteLine("Verse from JSON:");
-        // Console.WriteLine(verse);
+        // Print("Verse from JSON:");
 
-        // Console.WriteLine("Type the verse:\n");
+
+        // Print("Type the verse:\n");
 
         // while (true)
         // {

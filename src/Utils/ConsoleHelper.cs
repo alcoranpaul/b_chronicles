@@ -11,6 +11,8 @@ public static class ConsoleHelper
         Console.WriteLine(message);
     }
 
+    public static void ClearConsole() { Console.Clear(); }
+
     public static void LogTrace(
         string message,
         [CallerFilePath] string filePath = "",
@@ -32,6 +34,7 @@ public static class ConsoleHelper
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
+        Print($"{filePath} - {lineNumber}");
         Log(LogLevel.Information, message, filePath, lineNumber);
     }
 
@@ -65,7 +68,7 @@ public static class ConsoleHelper
         string filePath,
         int lineNumber)
     {
-        if (LoggingConfig._loggerFactory != null)
+        if (_loggerFactory != null)
         {
             CreateLoggerForCaller(filePath, out ILogger logger, out string fileName);
             logger.Log(logLevel, "[{file}:{line}] {message}", fileName, lineNumber, message);
