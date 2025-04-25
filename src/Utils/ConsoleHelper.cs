@@ -86,9 +86,9 @@ public static class ConsoleHelper
         int lineNumber)
     {
         // Convert the object to a string (use JSON serialization for complex objects)
-        string messageString = message is string ? message.ToString() : JsonSerializer.Serialize(message);
+        string? messageString = message is string ? message.ToString() : JsonSerializer.Serialize(message);
 
-        if (LoggingConfig._loggerFactory != null)
+        if (_loggerFactory != null)
         {
             CreateLoggerForCaller(filePath, out ILogger logger, out string fileName);
             logger.Log(logLevel, "[{file}:{line}] {message}", fileName, lineNumber, messageString);
@@ -102,11 +102,11 @@ public static class ConsoleHelper
     private static void CreateLoggerForCaller(string filePath, out ILogger logger, out string fileName)
     {
         string callingClassName = new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name ?? "UnknownClass";
-        if (LoggingConfig._loggerFactory == null)
+        if (_loggerFactory == null)
         {
             throw new InvalidOperationException("LoggerFactory is not initialized.");
         }
-        logger = LoggingConfig._loggerFactory.CreateLogger(callingClassName);
+        logger = _loggerFactory.CreateLogger(callingClassName);
 
         // Include caller info in the log message
         fileName = Path.GetFileName(filePath);
