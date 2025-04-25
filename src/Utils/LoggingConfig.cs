@@ -11,6 +11,7 @@ namespace Utils;
 public static class LoggingConfig
 {
     public static ILoggerFactory? _loggerFactory;
+    private static readonly int MAX_FILES = 5;
 
     public static ServiceProvider ConfigureLogging(bool enableFileLogging = true, bool enanbleConsoleLogging = true)
     {
@@ -105,9 +106,9 @@ public static class LoggingConfig
                                 .OrderBy(File.GetCreationTime)
                                 .ToList();
 
-        if (logFiles.Count > 25)
+        if (logFiles.Count > MAX_FILES)
         {
-            int filesToDelete = logFiles.Count - 25;
+            int filesToDelete = logFiles.Count - MAX_FILES;
             for (int i = 0; i < filesToDelete; i++)
             {
                 File.Delete(logFiles[i]);

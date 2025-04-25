@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Utils;
 
 public static class ConsoleHelper
 {
-
     /// <summary>
     /// Prints a message to the console.
     /// </summary>
@@ -32,7 +32,7 @@ public static class ConsoleHelper
     public static void ClearConsole() { Console.Clear(); }
 
     public static void LogTrace(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -40,7 +40,7 @@ public static class ConsoleHelper
     }
 
     public static void LogDebug(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -48,7 +48,7 @@ public static class ConsoleHelper
     }
 
     public static void LogInfo(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -56,7 +56,7 @@ public static class ConsoleHelper
     }
 
     public static void LogWarning(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -64,7 +64,7 @@ public static class ConsoleHelper
     }
 
     public static void LogError(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -72,7 +72,7 @@ public static class ConsoleHelper
     }
 
     public static void LogCritical(
-        string message,
+        object message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
@@ -81,18 +81,21 @@ public static class ConsoleHelper
 
     private static void Log(
         LogLevel logLevel,
-        string message,
+        object message,
         string filePath,
         int lineNumber)
     {
-        if (_loggerFactory != null)
+        // Convert the object to a string (use JSON serialization for complex objects)
+        string messageString = message is string ? message.ToString() : JsonSerializer.Serialize(message);
+
+        if (LoggingConfig._loggerFactory != null)
         {
             CreateLoggerForCaller(filePath, out ILogger logger, out string fileName);
-            logger.Log(logLevel, "[{file}:{line}] {message}", fileName, lineNumber, message);
+            logger.Log(logLevel, "[{file}:{line}] {message}", fileName, lineNumber, messageString);
         }
         else
         {
-            Print($"[{Path.GetFileName(filePath)}:{lineNumber}] {message}");
+            Print($"[{Path.GetFileName(filePath)}:{lineNumber}] {messageString}");
         }
     }
 

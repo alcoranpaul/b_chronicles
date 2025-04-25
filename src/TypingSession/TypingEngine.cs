@@ -8,10 +8,13 @@ public class TypingEngine
         TargetText = target;
     }
 
+    /// <summary>
+    /// Initializes the typing engine.
+    /// Prints the target text to the console.
+    /// </summary>
     public void Initialize()
     {
-        Console.WriteLine($"Type: {TargetText}");
-
+        LogDebug($"TypingEngine initialized with target: {TargetText}");
     }
 
     public void HandleKeyPress(ConsoleKeyInfo key)
