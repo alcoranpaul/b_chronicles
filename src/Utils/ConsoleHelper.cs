@@ -34,7 +34,6 @@ public static class ConsoleHelper
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
-        Print($"{filePath} - {lineNumber}");
         Log(LogLevel.Information, message, filePath, lineNumber);
     }
 
