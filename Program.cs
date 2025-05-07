@@ -83,26 +83,27 @@ static class Program
             Console.WriteLine("[2] Exit");
             Console.Write("Choose an option: ");
 
-            string input = Console.ReadLine() ?? string.Empty;
+            ConsoleKeyInfo key = Console.ReadKey(true); // Read a single key without displaying it
             Console.Clear();
-
-            switch (input)
+            switch (key.Key)
             {
-                case "1":
-                    QueueTypingSessions(BibleBooks.Genesis, 1, 1);
-                    QueueTypingSessions(BibleBooks.Genesis, 1, 2);
-                    return; // Proceed to main loop
-                case "2":
+                case ConsoleKey.D1:
+                    Console.WriteLine("Starting Bible Reading...");
+                    // Queue sessions, etc.
+                    break;
+                case ConsoleKey.D2:
                     Console.WriteLine("👋 Goodbye!");
                     ChangeState(State.End);
                     return;
                 default:
-                    Console.WriteLine("┗|｀O′|┛ Invalid option. Try again.");
+                    Console.WriteLine("❌ Invalid option. Try again.");
                     ShowLoadingAnimation("Returning to the menu");
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     Console.Clear();
+                    ShowMainMenu(); // Recurse or loop depending on your structure
                     break;
             }
+
         }
     }
 
