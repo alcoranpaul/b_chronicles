@@ -12,9 +12,9 @@ public class TypingSessionManager
         sessions.Enqueue(session);
     }
 
-    public void RunNext()
+    public bool RunNext()
     {
-        if (sessions.Count == 0) return;
+        if (sessions.Count == 0) return true;
 
         TypingSession current = sessions.Peek();
         switch (current.CurrentState)
@@ -23,12 +23,13 @@ public class TypingSessionManager
                 current.Initialize();
                 break;
             case TypingSession.State.InProgress:
-                if (current.RunStep()) sessions.Dequeue();
+                current.RunStep();
                 break;
             case TypingSession.State.Completed:
                 sessions.Dequeue();
-                break;
+                return true;
         }
+        return false;
     }
 
     public bool HasSessions() => sessions.Count > 0;

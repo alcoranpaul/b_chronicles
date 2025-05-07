@@ -1,0 +1,157 @@
+{
+    "genesis 1:1": {
+      "unlocks": [
+        {
+          "type": "Character",
+          "value": "God",
+          "traits": [
+            "Creator of the Heavens",
+            "Creator of the Earth"
+          ]
+        }
+      ]
+    },
+    "genesis 1:3": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Speaker of Light"
+        },
+        {
+          "type": "Event",
+          "value": "Command: Let Light Be"
+        }
+      ]
+    },
+    "genesis 1:5": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Designator of Day and Night"
+        }
+      ]
+    },
+    "genesis 1:7": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Separator of Waters"
+        }
+      ]
+    },
+    "genesis 1:10": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Namer of Earth and Seas"
+        }
+      ]
+    },
+    "genesis 1:16": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Maker of Luminaries"
+        },
+        {
+          "type": "Event",
+          "value": "Creation of Sun, Moon, and Stars"
+        }
+      ]
+    },
+    "genesis 1:21": {
+      "unlocks": [
+        {
+          "type": "Character",
+          "value": "Great Dragons",
+          "traits": ["Sea Creatures"]
+        },
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Creator of Teeming Life"
+        }
+      ]
+    },
+    "genesis 1:22": {
+      "unlocks": [
+        {
+          "type": "Event",
+          "value": "First Blessing: Be Fruitful and Multiply"
+        }
+      ]
+    },
+    "genesis 1:25": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Maker of Earth Creatures"
+        }
+      ]
+    },
+    "genesis 1:26": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Divine Council Member"
+        }
+      ]
+    },
+    "genesis 1:27": {
+      "unlocks": [
+        {
+          "type": "Character",
+          "value": "Adam",
+          "traits": ["Image of God", "Male"]
+        },
+        {
+          "type": "Character",
+          "value": "Eve",
+          "traits": ["Image of God", "Female"]
+        },
+        {
+          "type": "Event",
+          "value": "Creation in Divine Image"
+        }
+      ]
+    },
+    "genesis 1:28": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Giver of Dominion"
+        }
+      ]
+    },
+    "genesis 1:29": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Provider of Green Plants"
+        }
+      ]
+    },
+    "genesis 1:31": {
+      "unlocks": [
+        {
+          "type": "Trait",
+          "character": "God",
+          "value": "Declarer of 'Very Good'"
+        },
+        {
+          "type": "Event",
+          "value": "Completion of Sixth Day"
+        }
+      ]
+    }
+  }
+  

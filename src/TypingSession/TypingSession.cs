@@ -22,7 +22,7 @@ public class TypingSession
 
     public bool RunStep()
     {
-        if (CurrentState == State.Completed) return true;
+        if (CurrentState != State.InProgress) return true;
 
 
         ConsoleKeyInfo key = Console.ReadKey(true);

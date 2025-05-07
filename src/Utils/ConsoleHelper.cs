@@ -11,7 +11,7 @@ public static class ConsoleHelper
     /// Prints a message to the console.
     /// </summary>
     /// <param name="message"></param>
-    private static void Print(string message)
+    public static void Print(string message)
     {
         Console.WriteLine(message);
     }
@@ -22,7 +22,10 @@ public static class ConsoleHelper
     /// <param name="message"></param>
     public static void Print(object message)
     {
-        if (message != null && message.GetType() != typeof(string)) message = message.ToString() ?? string.Empty;
+        if (message != null && message.GetType() != typeof(string))
+        {
+            message = message.ToString() ?? string.Empty;
+        }
 
         if ((message as string) == string.Empty) return;
 
