@@ -2,6 +2,7 @@
 using Bible;
 using System.Threading;
 using Utils;
+using System.Threading.Tasks;
 
 static class Program
 {
@@ -21,27 +22,32 @@ static class Program
                 bool isSessionDone = sessionManager.RunNext();
                 if (isSessionDone)
                 {
-                    Console.WriteLine("======");
-                    Console.WriteLine("1. Continue");
-                    Console.WriteLine("2. Exit");
-                    Console.Write("Choose an option: ");
-                    string input = Console.ReadLine() ?? string.Empty;
-                    switch (input)
+                    if (sessionManager.HasSessions())
                     {
-                        case "2":
-                            ShowMainMenu();
-                            break;
-                        default:
-                            Console.WriteLine("❌ Invalid option. Try again.");
-                            break;
+                        Console.WriteLine("======");
+                        Console.WriteLine("1. Continue");
+                        Console.WriteLine("2. Main Menu");
+                        Console.Write("Choose an option: ");
+                        string input = Console.ReadLine() ?? string.Empty;
+                        switch (input)
+                        {
+                            case "2":
+                                ShowMainMenu();
+                                break;
+                            default:
+                                Console.WriteLine("❌ Invalid option. Try again.");
+                                break;
+                        }
+                        Console.Clear();
                     }
-                    Console.Clear();
+                    else
+                    {
+
+                    }
                 }
+
             }
-            else
-            {
-                ChangeState(State.End);
-            }
+
         }
 
 
@@ -66,55 +72,85 @@ static class Program
         LoggingConfig.ConfigureLogging(true, false);
     }
 
+
+
+
     private static void ChangeState(State newState)
     {
         if (newState == state) return;
         state = newState;
     }
-    static void ShowMainMenu()
+    static async Task ShowMainMenu()
     {
         ChangeState(State.MainMenu);
-        Console.Clear();
 
+        MenuOptions option1 = new MenuOptions("Read the Bible", () => QueueTypingSessions(BibleBooks.Genesis, 1, 1));
+
+        MenuOptions option2 = new MenuOptions("Exit", () =>
+        {
+            Console.WriteLine("👋 Goodbye!");
+            ChangeState(State.End);
+        });
+
+        await ShowMenuAsync("Bible Typing App", option1, option2);
+
+
+
+
+    }
+
+    private static async Task ShowMenuAsync(string menuTitle, params MenuOptions[] options)
+    {
         while (true)
         {
-            Console.WriteLine("=== Bible Typing App ===");
-            Console.WriteLine("[1] Read the Bible");
-            Console.WriteLine("[2] Exit");
-            Console.Write("Choose an option: ");
-
-            ConsoleKeyInfo key = Console.ReadKey(true); // Read a single key without displaying it
             Console.Clear();
-            switch (key.Key)
+            Console.WriteLine($"=== {menuTitle} ===");
+
+            // Display all menu options
+            for (int i = 0; i < options.Length; i++)
             {
-                case ConsoleKey.D1:
-                    Console.WriteLine("Starting Bible Reading...");
-                    // Queue sessions, etc.
-                    break;
-                case ConsoleKey.D2:
-                    Console.WriteLine("👋 Goodbye!");
-                    ChangeState(State.End);
-                    return;
-                default:
-                    Console.WriteLine("❌ Invalid option. Try again.");
-                    ShowLoadingAnimation("Returning to the menu");
-                    Thread.Sleep(1000);
-                    Console.Clear();
-                    ShowMainMenu(); // Recurse or loop depending on your structure
-                    break;
+                Console.WriteLine($"[{i + 1}] {options[i].optionText}");
             }
 
+            Console.Write("Choose an option: ");
+
+            // Read a single key press
+            ConsoleKeyInfo key = Console.ReadKey(false);
+            Console.Clear();
+            // Convert the key to a number (if valid)
+            int choice = key.KeyChar - '0'; // Convert the key character to an integer (e.g., '1' -> 1)
+
+            if (choice >= 1 && choice <= options.Length)
+            {
+                // Execute the selected action
+                options[choice - 1].action?.Invoke();
+
+                Thread.Sleep(3000);
+                break; // Exit the menu loop after a valid selection
+            }
+            else
+            {
+                Console.WriteLine("\n❌ Invalid option. Try again.");
+                await ShowLoadingAnimationAsync("Returning to the menu", 2);
+
+            }
         }
     }
 
-    private static void ShowLoadingAnimation(string message, int dotCount = 3, int delay = 500)
+    private static async Task ShowLoadingAnimationAsync(string message, int durationInSeconds = 3, int delay = 100)
     {
-        Console.Write(message);
-        for (int i = 0; i < dotCount; i++)
+        Console.Write(message + " "); // Display the message
+        char[] spinner = ['|', '/', '-', '\\']; // Characters for the spinning bar
+
+        int totalIterations = durationInSeconds * 1000 / delay; // Calculate the total number of iterations
+
+        for (int i = 0; i < totalIterations; i++)
         {
-            Thread.Sleep(delay); // Pause for the specified delay (in milliseconds)
-            Console.Write(".");
+            Console.Write(spinner[i % spinner.Length]); // Display the current spinner character
+            await Task.Delay(delay); // Pause asynchronously for the specified delay
+            Console.Write("\b"); // Move the cursor back to overwrite the spinner character
         }
+
         Console.WriteLine(); // Move to the next line after the animation
     }
     private enum State
@@ -122,6 +158,18 @@ static class Program
         MainMenu,
         TypingSession,
         End
+    }
+
+    private struct MenuOptions
+    {
+        public string optionText;
+        public Action? action;
+
+        public MenuOptions(string optionText, Action? action = null)
+        {
+            this.optionText = optionText;
+            this.action = action;
+        }
     }
 }
 
