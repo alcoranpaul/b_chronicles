@@ -1,4 +1,5 @@
 ﻿using Bible;
+using Player;
 using Utils;
 
 namespace main;
@@ -6,13 +7,16 @@ static class Program
 {
     private static TypingSessionManager sessionManager = new();
     private static State state = State.MainMenu;
+    private static User? user;
 
     static async Task Main()
     {
         try
         {
             InitializeApp();
+
             await RunApp();
+
         }
         finally
         {
@@ -25,6 +29,14 @@ static class Program
         Console.CursorVisible = false;
         ConfigureLogging();
         Console.Clear();
+
+        user = new();
+        if (!user.HasBooks)
+        {
+            LogDebug($"User has no books.");
+
+            user.AddBook(BibleBooks.Genesis);
+        }
     }
 
     private static void RestoreConsoleSettings()
@@ -46,15 +58,21 @@ static class Program
                     await ProcessSessions();
                     break;
 
-                case State.End:
-                    Console.WriteLine("Exiting the application...");
-                    break;
-
                 default:
                     Console.WriteLine("Unknown state. Returning to the main menu...");
                     ChangeState(State.MainMenu);
                     break;
             }
+        }
+
+        OnEnded();
+    }
+
+    private static void OnEnded()
+    {
+        if (user != null)
+        {
+            user.End();
         }
     }
 
@@ -95,7 +113,7 @@ static class Program
 
         Menu.Options option2 = new Menu.Options("Exit", () =>
         {
-            Console.WriteLine("👋 Goodbye!");
+            LogInfo("Requested to end application");
             ChangeState(State.End);
         });
 
@@ -123,7 +141,7 @@ static class Program
     {
         try
         {
-            Book b = Book.GetBook(book);
+            Bible.Book b = Bible.Book.GetBook(book);
             string verseText = b.GetVerse(chapter, verse);
             return new TypingSession(verseText);
         }
