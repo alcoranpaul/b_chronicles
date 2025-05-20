@@ -17,7 +17,8 @@ public class Character
     {
         Name = name;
         Traits = traits;
-        Appearances = 0;
+        Appearances = 1;
+        LogDebug($"Initialized Character [{Name}] with initial traits: {string.Join(", ", Traits)}");
     }
 
     /// <summary>
