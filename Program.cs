@@ -6,9 +6,9 @@ namespace main;
 
 static class Program
 {
+    private static readonly GameStateManager _stateManager = new();
     private static readonly TypingSessionManager sessionManager = new();
     private static readonly UnlockManager unlockManager = UnlockManager.Instance;
-    private static State state = State.MainMenu;
     private static User? user;
 
     static async Task Main()
@@ -46,25 +46,25 @@ static class Program
 
     private static async Task RunApp()
     {
-        while (state != State.End)
+        while (_stateManager.CurrentState != GameStateManager.State.End)
         {
-            switch (state)
+            switch (_stateManager.CurrentState)
             {
-                case State.MainMenu:
+                case GameStateManager.State.MainMenu:
                     await ShowMainMenu();
                     break;
 
-                case State.TypingSession:
+                case GameStateManager.State.TypingSession:
                     await ProcessSessions();
                     break;
 
-                case State.Profile:
+                case GameStateManager.State.Profile:
                     await ShowProfileMenu();
                     break;
 
                 default:
                     Print("Unknown state. Returning to the main menu...");
-                    ChangeState(State.MainMenu);
+                    _stateManager.ChangeState(GameStateManager.State.MainMenu);
                     break;
             }
         }
@@ -87,7 +87,7 @@ static class Program
         if (!sessionManager.HasSessions())
         {
             Print("No more sessions available.");
-            ChangeState(State.MainMenu);
+            _stateManager.ChangeState(GameStateManager.State.MainMenu);
             return;
         }
 
@@ -103,31 +103,31 @@ static class Program
             else
             {
                 Print("All sessions completed.");
-                ChangeState(State.MainMenu);
+                _stateManager.ChangeState(GameStateManager.State.MainMenu);
             }
         }
     }
 
     private static async Task ShowMainMenu()
     {
-        ChangeState(State.MainMenu);
+        _stateManager.ChangeState(GameStateManager.State.MainMenu);
 
         Menu.Options readOption = new("Read the Bible", () =>
         {
             QueueTypingSessions(BibleBooks.Genesis, 1, 1);
             QueueTypingSessions(BibleBooks.Genesis, 1, 2);
-            ChangeState(State.TypingSession);
+            _stateManager.ChangeState(GameStateManager.State.TypingSession);
         });
 
         Menu.Options playerInfoOption = new("Profile", () =>
         {
-            ChangeState(State.Profile);
+            _stateManager.ChangeState(GameStateManager.State.Profile);
         });
 
         Menu.Options exitOption = new("Exit", () =>
         {
             LogDebug("Requested to end application");
-            ChangeState(State.End);
+            _stateManager.ChangeState(GameStateManager.State.End);
         });
 
         await Menu.Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
@@ -140,7 +140,7 @@ static class Program
         Menu.Options option3 = new Menu.Options("Events");
         Menu.Options mainMenuOption = new Menu.Options("Main Menu", () =>
         {
-            ChangeState(State.MainMenu);
+            _stateManager.ChangeState(GameStateManager.State.MainMenu);
         });
 
         await Menu.Show("Profile", shouldClearPrev: true, option1, option2, option3, mainMenuOption);
@@ -152,7 +152,7 @@ static class Program
 
         Menu.Options option2 = new Menu.Options("Main Menu", () =>
         {
-            ChangeState(State.MainMenu);
+            _stateManager.ChangeState(GameStateManager.State.MainMenu);
         });
 
         await Menu.Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
@@ -169,12 +169,6 @@ static class Program
         LoggingConfig.ConfigureLogging(true, false);
     }
 
-    private static void ChangeState(State newState)
-    {
-        if (newState == state) return;
-        LogDebug($"State changed from {state} to {newState}");
-        state = newState;
-    }
 
     private static void RestoreConsoleSettings()
     {
@@ -182,11 +176,5 @@ static class Program
     }
 
 
-    private enum State
-    {
-        MainMenu,
-        TypingSession,
-        Profile,
-        End
-    }
+
 }
