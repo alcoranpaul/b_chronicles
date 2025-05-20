@@ -10,6 +10,8 @@ static class Program
     private static readonly TypingSessionManager _sessionManager = TypingSessionManager.Instance;
     private static readonly UnlockManager _unlockManager = UnlockManager.Instance;
     private static readonly MainMenu _mainMenu = new();
+    private static readonly ProfileMenu _profileMenu = new();
+    private static readonly ContinueMenu _continueMenu = new();
     private static User? user;
 
     static async Task Main()
@@ -52,7 +54,7 @@ static class Program
             switch (_stateManager.CurrentState)
             {
                 case GameStateManager.State.MainMenu:
-                    await ShowMainMenu();
+                    await _mainMenu.ShowAsync();
                     break;
 
                 case GameStateManager.State.TypingSession:
@@ -60,7 +62,7 @@ static class Program
                     break;
 
                 case GameStateManager.State.Profile:
-                    await ShowProfileMenu();
+                    await _profileMenu.ShowAsync();
                     break;
 
                 default:
@@ -99,7 +101,7 @@ static class Program
             // Has next sesison queued?
             if (_sessionManager.HasSessions())
             {
-                await ShowContinueMenu();
+                await _continueMenu.ShowAsync();
             }
             else
             {
@@ -109,41 +111,7 @@ static class Program
         }
     }
 
-    private static async Task ShowMainMenu()
-    {
-        await _mainMenu.ShowAsync();
-    }
 
-    private static async Task ShowProfileMenu()
-    {
-        Menu.Options option1 = new Menu.Options("Book Progression");
-        Menu.Options option2 = new Menu.Options("Characters");
-        Menu.Options option3 = new Menu.Options("Events");
-        Menu.Options mainMenuOption = new Menu.Options("Main Menu", () =>
-        {
-            _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
-        });
-
-        await Menu.Show("Profile", shouldClearPrev: true, option1, option2, option3, mainMenuOption);
-    }
-
-    private static async Task ShowContinueMenu()
-    {
-        Menu.Options option1 = new Menu.Options("Continue");
-
-        Menu.Options option2 = new Menu.Options("Main Menu", () =>
-        {
-            _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
-        });
-
-        await Menu.Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
-    }
-
-    private static void QueueTypingSessions(BibleBooks book, int chapter, int verse)
-    {
-
-        _sessionManager.AddSessionInternal(book, chapter, verse);
-    }
 
     private static void ConfigureLogging()
     {
