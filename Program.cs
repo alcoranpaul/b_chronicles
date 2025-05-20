@@ -43,10 +43,6 @@ static class Program
         }
     }
 
-    private static void RestoreConsoleSettings()
-    {
-        Console.CursorVisible = true; // Restore cursor visibility
-    }
 
     private static async Task RunApp()
     {
@@ -60,6 +56,10 @@ static class Program
 
                 case State.TypingSession:
                     await ProcessSessions();
+                    break;
+
+                case State.Profile:
+                    await ShowProfileMenu();
                     break;
 
                 default:
@@ -112,20 +112,38 @@ static class Program
     {
         ChangeState(State.MainMenu);
 
-        Menu.Options option1 = new("Read the Bible", () =>
+        Menu.Options readOption = new("Read the Bible", () =>
         {
             QueueTypingSessions(BibleBooks.Genesis, 1, 1);
             QueueTypingSessions(BibleBooks.Genesis, 1, 2);
             ChangeState(State.TypingSession);
         });
 
-        Menu.Options option2 = new("Exit", () =>
+        Menu.Options playerInfoOption = new("Profile", () =>
+        {
+            ChangeState(State.Profile);
+        });
+
+        Menu.Options exitOption = new("Exit", () =>
         {
             LogDebug("Requested to end application");
             ChangeState(State.End);
         });
 
-        await Menu.Show("Bible Typing App", shouldClearPrev: true, option1, option2);
+        await Menu.Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
+    }
+
+    private static async Task ShowProfileMenu()
+    {
+        Menu.Options option1 = new Menu.Options("Bible Progression");
+        Menu.Options option2 = new Menu.Options("Characters");
+        Menu.Options option3 = new Menu.Options("Events");
+        Menu.Options mainMenuOption = new Menu.Options("Main Menu", () =>
+        {
+            ChangeState(State.MainMenu);
+        });
+
+        await Menu.Show("Profile", shouldClearPrev: true, option1, option2, option3, mainMenuOption);
     }
 
     private static async Task ShowContinueMenu()
@@ -158,10 +176,17 @@ static class Program
         state = newState;
     }
 
+    private static void RestoreConsoleSettings()
+    {
+        Console.CursorVisible = true; // Restore cursor visibility
+    }
+
+
     private enum State
     {
         MainMenu,
         TypingSession,
+        Profile,
         End
     }
 }
