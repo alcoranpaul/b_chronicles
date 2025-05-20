@@ -6,6 +6,8 @@ namespace main;
 
 public class UnlockManager
 {
+    public static Action<UnlockEntry>? OnUnlockedEvent;
+
     public UnlockManager()
     {
         TypingSessionManager.OnSessionCompleted += OnSessionCompleted;
@@ -17,9 +19,11 @@ public class UnlockManager
 
         try
         {
-            UnlockData unlockData = FindUnlockData(book, fileName);
+            UnlockData? unlockData = FindUnlockData(book, fileName);
+            if (unlockData == null) return; // No unlock
 
             UnlockEntry? unlockable = GetUnlock(book, chapter, verse, unlockData);
+            OnUnlockedEvent?.Invoke(unlockable);
         }
         catch (FileNotFoundException)
         {
@@ -31,6 +35,7 @@ public class UnlockManager
         }
 
     }
+
 
     private UnlockEntry GetUnlock(BibleBooks book, int chapter, int verse, UnlockData unlockData)
     {
@@ -51,12 +56,15 @@ public class UnlockManager
     }
 
 
-    private static UnlockData FindUnlockData(BibleBooks book, string fileName)
+    private static UnlockData? FindUnlockData(BibleBooks book, string fileName)
     {
         string filePath = Path.Combine("json", "unlocks", $"{book.ToString().ToLower()}", fileName);
 
         if (!File.Exists(filePath))
-            throw new FileNotFoundException($"Unlock file not found at path: {filePath}");
+        {
+            LogDebug($"Unlock file not found at path: {filePath}");
+            return null;
+        }
 
 
         string content = File.ReadAllText(filePath);
@@ -75,7 +83,7 @@ public class UnlockManager
 
     public static void End()
     {
-
+        OnUnlockedEvent = null;
     }
 
 
