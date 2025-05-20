@@ -9,7 +9,7 @@ namespace Player;
 /// </summary>
 public class BookComponent
 {
-    private readonly List<Book> books = new List<Book>();
+    private readonly List<Book> books;
     private readonly string PATH_TO_BOOKS = Path.Combine(
         Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
         "json", "player", "books.json");
@@ -26,6 +26,7 @@ public class BookComponent
     /// </summary>
     public BookComponent()
     {
+        books = new List<Book>();
         LoadBooksFromSave();
     }
 
