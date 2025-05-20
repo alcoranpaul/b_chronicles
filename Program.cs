@@ -135,7 +135,7 @@ static class Program
 
     private static async Task ShowProfileMenu()
     {
-        Menu.Options option1 = new Menu.Options("Bible Progression");
+        Menu.Options option1 = new Menu.Options("Book Progression");
         Menu.Options option2 = new Menu.Options("Characters");
         Menu.Options option3 = new Menu.Options("Events");
         Menu.Options mainMenuOption = new Menu.Options("Main Menu", () =>
