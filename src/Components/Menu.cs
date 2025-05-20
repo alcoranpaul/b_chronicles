@@ -74,7 +74,8 @@ public abstract class Menu : IMenu
         Console.WriteLine(); // Move to the next line after the animation
 
     }
-    public struct Options
+
+    protected struct Options
     {
         public string optionText;
         public Action? action;
