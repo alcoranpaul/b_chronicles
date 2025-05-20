@@ -16,6 +16,18 @@ public static class ConsoleHelper
         Console.WriteLine(message);
     }
 
+    public static void Print(string message, ConsoleColor color, bool newLine = true)
+    {
+        Console.ForegroundColor = color;
+        if (newLine)
+            Console.WriteLine(message);
+        else
+            Console.Write(message);
+        Console.ResetColor();
+    }
+
+
+
     /// <summary>
     /// Prints a message to the console, ensuring that it is not null or empty.
     /// </summary>

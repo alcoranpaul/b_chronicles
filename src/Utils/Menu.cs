@@ -9,13 +9,15 @@ public static class Menu
         {
             if (shouldClearPrev)
                 Console.Clear();
-            Console.WriteLine($"\n=== {menuTitle} ===");
+            Print($"\n=== {menuTitle} ===");
 
             // Display all menu options
             for (int i = 0; i < options.Length; i++)
             {
-                Console.WriteLine($"[{i + 1}] {options[i].optionText}");
+                Print($"[{i + 1}] ", ConsoleColor.Cyan, false);
+                Print(options[i].optionText);
             }
+
 
             Console.WriteLine();
             Console.Write("Choose an option: ");
@@ -37,7 +39,8 @@ public static class Menu
             }
             else
             {
-                Console.WriteLine("\n❌ Invalid option. Try again.");
+                Print("\n❌ Invalid option.", ConsoleColor.Red);
+                Print("Try again.");
                 await ShowLoadingAnimationAsync("Returning to the menu", 2);
 
             }
