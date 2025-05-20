@@ -55,7 +55,12 @@ public class UnlockManager
     {
         string filePath = Path.Combine("json", "unlocks", $"{book.ToString().ToLower()}", fileName);
 
-        string content = File.ReadAllText(filePath);  // Throws FileNotFoundException if not found
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException($"Unlock file not found at path: {filePath}");
+
+
+        string content = File.ReadAllText(filePath);
+
         JsonSerializerOptions? options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
@@ -63,8 +68,10 @@ public class UnlockManager
         };
 
         UnlockData unlockData = JsonSerializer.Deserialize<UnlockData>(content, options)!;
+
         return unlockData;
     }
+
 
     public static void End()
     {
