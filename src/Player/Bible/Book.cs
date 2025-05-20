@@ -3,30 +3,55 @@ using System.Text.Json;
 
 namespace Player;
 
+/// <summary>
+/// Manages the collection of books that the user has read,
+/// including loading from and saving to a JSON save file.
+/// </summary>
 public class BookComponent
 {
     private readonly List<Book> books = new List<Book>();
     private readonly string PATH_TO_BOOKS = Path.Combine(
         Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
         "json", "player", "books.json");
+
+    /// <summary>
+    /// Gets a value indicating whether the user currently has any books.
+    /// </summary>
     public bool HasBooks => books.Count > 0;
 
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BookComponent"/> class
+    /// and loads books from the saved JSON file if it exists.
+    /// </summary>
     public BookComponent()
     {
         LoadBooksFromSave();
     }
 
+    /// <summary>
+    /// Saves the current book list to the save file.
+    /// </summary>
     public void End()
     {
         SaveBooks();
     }
 
+
+    /// <summary>
+    /// Adds a new book to the user's collection.
+    /// </summary>
+    /// <param name="book">The <see cref="Bible.BibleBooks"/> book to add.</param>
     public void AddBook(Bible.BibleBooks book)
     {
         LogInfo($"Adding the {Enum.GetName(book)} of Genesis to the user.");
         books.Add(new Book(book));
     }
 
+
+    /// <summary>
+    /// Saves the current list of books to a JSON file on disk.
+    /// </summary>
     private void SaveBooks()
     {
         try
@@ -49,6 +74,11 @@ public class BookComponent
             LogError($"Error saving books: {ex.Message}");
         }
     }
+
+
+    /// <summary>
+    /// Loads the book list from the JSON save file if it exists.
+    /// </summary>
     private void LoadBooksFromSave()
     {
         try
