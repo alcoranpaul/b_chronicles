@@ -6,7 +6,8 @@ namespace main;
 
 static class Program
 {
-    private static TypingSessionManager sessionManager = new();
+    private static readonly TypingSessionManager sessionManager = new();
+    private static readonly UnlockManager unlockManager = new();
     private static State state = State.MainMenu;
     private static User? user;
 
@@ -32,6 +33,7 @@ static class Program
         Console.Clear();
 
         user = new();
+
         if (!user.HasBooks)
         {
             LogDebug($"User has no books.");
@@ -74,6 +76,7 @@ static class Program
         if (user != null)
         {
             user.End();
+            TypingSessionManager.End();
         }
     }
 
@@ -114,7 +117,7 @@ static class Program
 
         Menu.Options option2 = new("Exit", () =>
         {
-            LogInfo("Requested to end application");
+            LogDebug("Requested to end application");
             ChangeState(State.End);
         });
 
@@ -147,7 +150,7 @@ static class Program
     private static void ChangeState(State newState)
     {
         if (newState == state) return;
-        LogInfo($"State changed from {state} to {newState}");
+        LogDebug($"State changed from {state} to {newState}");
         state = newState;
     }
 
