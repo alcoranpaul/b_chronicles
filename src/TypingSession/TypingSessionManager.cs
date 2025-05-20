@@ -17,9 +17,6 @@ public class TypingSessionManager : ISessionAdder
     void ISessionAdder.AddSession(BibleBooks book, int chapter, int verse)
         => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
-    // Public static convenience method (alternative to interface)
-    public static void AddSessionStatic(BibleBooks book, int chapter, int verse)
-        => Instance.AddSessionInternal(book, chapter, verse);
 
     // Internal method (only accessible within the assembly)
     internal void AddSessionInternal(BibleBooks book, int chapter, int verse)
