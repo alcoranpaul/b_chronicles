@@ -3,6 +3,7 @@ using Bible;
 public class TypingSessionManager
 {
     private readonly Queue<SessionInfo> sessions;
+    public static event Action<BibleBooks, int, int>? OnSessionCompleted;
 
     public TypingSessionManager()
     {
@@ -22,18 +23,21 @@ public class TypingSessionManager
     public bool RunNext()
     {
         if (sessions.Count == 0) return true;
-
-        TypingSession current = sessions.Peek().session;
+        SessionInfo currentInfo = sessions.Peek();
+        TypingSession current = currentInfo.session;
         switch (current.CurrentState)
         {
             case TypingSession.State.NotStarted:
-                RenderSessionBookInfo(sessions.Peek());
+                RenderSessionBookInfo(currentInfo);
                 current.Initialize();
                 break;
             case TypingSession.State.InProgress:
                 current.RunStep();
                 break;
             case TypingSession.State.Completed:
+                sessions.Dequeue();
+                OnSessionCompleted?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
+                return true;
             case TypingSession.State.Cancelled:
                 sessions.Dequeue();
                 return true;
@@ -53,7 +57,10 @@ public class TypingSessionManager
     }
 
     public bool HasSessions() => sessions.Count > 0;
-
+    public static void End()
+    {
+        OnSessionCompleted = null;
+    }
     public struct SessionInfo
     {
         public BibleBooks book;
