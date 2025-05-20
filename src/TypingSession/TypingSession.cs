@@ -4,9 +4,9 @@ public class TypingSession
 
     public State CurrentState { get; private set; }
 
-    public TypingSession(string verse)
+    public TypingSession(string textToType)
     {
-        engine = new TypingEngine(verse);
+        engine = new TypingEngine(textToType);
         ChangeState(State.NotStarted);
     }
 
@@ -14,12 +14,11 @@ public class TypingSession
     {
         engine.Initialize();
 
-        // Prints the required text to the console
         var (display, _) = engine.GetDisplayText();
         ConsoleRenderer.RenderTypedText(display);
+
         ChangeState(State.InProgress);
     }
-
     public bool RunStep()
     {
         if (CurrentState != State.InProgress) return true;

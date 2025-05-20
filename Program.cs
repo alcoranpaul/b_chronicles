@@ -135,22 +135,7 @@ static class Program
 
     private static void QueueTypingSessions(BibleBooks book, int chapter, int verse)
     {
-        sessionManager.AddSession(CreateSession(book, chapter, verse));
-    }
-
-    private static TypingSession CreateSession(BibleBooks book, int chapter, int verse)
-    {
-        try
-        {
-            Bible.Book b = Bible.Book.GetBook(book);
-            string verseText = b.GetVerse(chapter, verse);
-            return new TypingSession(verseText);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error creating session: {ex.Message}");
-            throw;
-        }
+        sessionManager.AddSession(book, chapter, verse);
     }
 
     private static void ConfigureLogging()
