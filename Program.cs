@@ -6,7 +6,7 @@ namespace main;
 
 static class Program
 {
-    private static readonly GameStateManager _stateManager = new();
+    private static readonly GameStateManager _stateManager = GameStateManager.Instance;
     private static readonly TypingSessionManager _sessionManager = TypingSessionManager.Instance;
     private static readonly UnlockManager _unlockManager = UnlockManager.Instance;
     private static User? user;
@@ -64,7 +64,7 @@ static class Program
 
                 default:
                     Print("Unknown state. Returning to the main menu...");
-                    _stateManager.ChangeState(GameStateManager.State.MainMenu);
+                    _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
                     break;
             }
         }
@@ -87,7 +87,7 @@ static class Program
         if (!_sessionManager.HasSessions())
         {
             Print("No more sessions available.");
-            _stateManager.ChangeState(GameStateManager.State.MainMenu);
+            _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
             return;
         }
 
@@ -103,31 +103,31 @@ static class Program
             else
             {
                 Print("All sessions completed.");
-                _stateManager.ChangeState(GameStateManager.State.MainMenu);
+                _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
             }
         }
     }
 
     private static async Task ShowMainMenu()
     {
-        _stateManager.ChangeState(GameStateManager.State.MainMenu);
+        _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
 
         Menu.Options readOption = new("Read the Bible", () =>
         {
             QueueTypingSessions(BibleBooks.Genesis, 1, 1);
             QueueTypingSessions(BibleBooks.Genesis, 1, 2);
-            _stateManager.ChangeState(GameStateManager.State.TypingSession);
+            _stateManager.ChangeStateInternal(GameStateManager.State.TypingSession);
         });
 
         Menu.Options playerInfoOption = new("Profile", () =>
         {
-            _stateManager.ChangeState(GameStateManager.State.Profile);
+            _stateManager.ChangeStateInternal(GameStateManager.State.Profile);
         });
 
         Menu.Options exitOption = new("Exit", () =>
         {
             LogDebug("Requested to end application");
-            _stateManager.ChangeState(GameStateManager.State.End);
+            _stateManager.ChangeStateInternal(GameStateManager.State.End);
         });
 
         await Menu.Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
@@ -140,7 +140,7 @@ static class Program
         Menu.Options option3 = new Menu.Options("Events");
         Menu.Options mainMenuOption = new Menu.Options("Main Menu", () =>
         {
-            _stateManager.ChangeState(GameStateManager.State.MainMenu);
+            _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
         });
 
         await Menu.Show("Profile", shouldClearPrev: true, option1, option2, option3, mainMenuOption);
@@ -152,7 +152,7 @@ static class Program
 
         Menu.Options option2 = new Menu.Options("Main Menu", () =>
         {
-            _stateManager.ChangeState(GameStateManager.State.MainMenu);
+            _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
         });
 
         await Menu.Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
@@ -160,6 +160,7 @@ static class Program
 
     private static void QueueTypingSessions(BibleBooks book, int chapter, int verse)
     {
+
         _sessionManager.AddSessionInternal(book, chapter, verse);
     }
 

@@ -1,18 +1,21 @@
 namespace main;
 
-public class GameStateManager
+public class GameStateManager : IStateChange
 {
-    public enum State
-    {
-        MainMenu,
-        TypingSession,
-        Profile,
-        End
-    }
+    public static GameStateManager Instance { get; private set; } = new();
     public State CurrentState { get; private set; }
     public event Action<State>? OnStateChanged;
 
-    public void ChangeState(State newState)
+    private GameStateManager()
+    {
+        CurrentState = State.MainMenu;
+    }
+
+
+    void IStateChange.ChangeState(State newState) => ChangeState(newState);
+    internal void ChangeStateInternal(State newState) => ChangeState(newState);
+
+    private void ChangeState(State newState)
     {
         if (newState == CurrentState) return;
 
@@ -21,4 +24,12 @@ public class GameStateManager
         OnStateChanged?.Invoke(newState);
     }
 
+
+    public enum State
+    {
+        MainMenu,
+        TypingSession,
+        Profile,
+        End
+    }
 }
