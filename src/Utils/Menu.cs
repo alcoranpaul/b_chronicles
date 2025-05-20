@@ -9,7 +9,7 @@ public static class Menu
         {
             if (shouldClearPrev)
                 Console.Clear();
-            Print($"\n=== {menuTitle} ===");
+            Print($"\n=== {menuTitle} ===\n");
 
             // Display all menu options
             for (int i = 0; i < options.Length; i++)
@@ -20,7 +20,6 @@ public static class Menu
 
 
             Console.WriteLine();
-            Console.Write("Choose an option: ");
 
             // Read a single key press
             ConsoleKeyInfo key = Console.ReadKey(false);
