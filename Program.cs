@@ -78,6 +78,7 @@ static class Program
         {
             user.End();
             TypingSessionManager.End();
+            unlockManager.End();
         }
     }
 

@@ -7,7 +7,7 @@ namespace main;
 public class UnlockManager
 {
     public static UnlockManager Instance { get; private set; } = new UnlockManager();
-    public static Action<BibleBooks, int, int, UnlockEntry>? OnUnlockedEvent;
+    public Action<BibleBooks, int, int, UnlockEntry>? OnUnlockedEvent;
 
     private UnlockManager()
     {
@@ -82,7 +82,7 @@ public class UnlockManager
     }
 
 
-    public static void End()
+    public void End()
     {
         OnUnlockedEvent = null;
     }
