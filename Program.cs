@@ -3,6 +3,7 @@ using Player;
 using Utils;
 
 namespace main;
+
 static class Program
 {
     private static TypingSessionManager sessionManager = new();

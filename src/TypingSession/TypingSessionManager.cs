@@ -26,6 +26,7 @@ public class TypingSessionManager
                 current.RunStep();
                 break;
             case TypingSession.State.Completed:
+            case TypingSession.State.Cancelled:
                 sessions.Dequeue();
                 return true;
         }

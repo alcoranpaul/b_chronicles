@@ -26,6 +26,12 @@ public class TypingSession
 
 
         ConsoleKeyInfo key = Console.ReadKey(true);
+        if (key.Key == ConsoleKey.F2)
+        {
+            Console.WriteLine("\n[F2] Triggered Session cancelled.");
+            ChangeState(State.Cancelled);
+            return false;
+        }
         engine.HandleKeyPress(key);
         var (display, completed) = engine.GetDisplayText();
         ConsoleRenderer.RenderTypedText(display);
@@ -51,6 +57,7 @@ public class TypingSession
     {
         NotStarted,
         InProgress,
-        Completed
+        Completed,
+        Cancelled
     }
 }
