@@ -105,14 +105,14 @@ static class Program
     {
         ChangeState(State.MainMenu);
 
-        Menu.Options option1 = new Menu.Options("Read the Bible", () =>
+        Menu.Options option1 = new("Read the Bible", () =>
         {
             QueueTypingSessions(BibleBooks.Genesis, 1, 1);
             QueueTypingSessions(BibleBooks.Genesis, 1, 2);
             ChangeState(State.TypingSession);
         });
 
-        Menu.Options option2 = new Menu.Options("Exit", () =>
+        Menu.Options option2 = new("Exit", () =>
         {
             LogInfo("Requested to end application");
             ChangeState(State.End);
