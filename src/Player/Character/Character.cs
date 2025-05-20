@@ -28,7 +28,10 @@ public class Character
     public void AddTrait(string trait)
     {
         if (!Traits.Contains(trait))
+        {
             Traits.Add(trait);
+            LogDebug($"Added Trait of [{trait}] to {Name}");
+        }
     }
 
     public object ToSerializable()
