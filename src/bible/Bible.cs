@@ -17,10 +17,12 @@ public class Book
 
         string lower_name = Name.ToLower();
         string book_file_path = Path.Combine("json", $"{lower_name}");
-        string[] files = Directory.GetFiles(book_file_path, "*.json");
-        foreach (string file in files)
+        string[] allChapterFiles = Directory.GetFiles(book_file_path, "*.json");
+
+
+        foreach (string chapterFile in allChapterFiles)
         {
-            string json = File.ReadAllText(file);
+            string json = File.ReadAllText(chapterFile);
 
             // Deserialize the JSON into the wrapper class
             JsonSerializerOptions? options = new JsonSerializerOptions
