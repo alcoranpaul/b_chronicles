@@ -5,6 +5,7 @@ namespace Player;
 public abstract class Component<T>
 {
     protected readonly List<T> t_objects;
+    public List<T> Objects => t_objects;
     protected readonly string path_to_object;
     protected readonly string object_name;
     public bool IsDefined => t_objects.Count > 0;
@@ -23,6 +24,9 @@ public abstract class Component<T>
     "json", "player", $"{object_name.ToLower()}.json");
         Load();
     }
+
+
+
     public void End()
     {
         Save();
@@ -34,7 +38,7 @@ public abstract class Component<T>
     /// <param name="object_to_be_added"></param>
     public void AddObject(T object_to_be_added)
     {
-        LogInfo($"Adding {object_to_be_added} to user's {object_name} collection.");
+        LogInfo($"Adding object with name [{object_to_be_added}] to user's {object_name} collection.");
         t_objects.Add(object_to_be_added);
     }
 
