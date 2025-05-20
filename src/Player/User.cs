@@ -69,6 +69,7 @@ public class User
     public void End()
     {
         bookComponent.End();
+        characterComponent.End();
         UnlockManager.Instance.OnUnlockedEvent -= OnUnlockedEvent;
     }
 
