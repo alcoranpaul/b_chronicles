@@ -1,9 +1,23 @@
 
 namespace main;
 
+/// <summary>
+/// Abstract base class for all menu implementations in the application.
+/// Provides common menu functionality like rendering, option selection, and loading animations.
+/// </summary>
+/// <remarks>
+/// Inherit from this class to create specific menus (e.g. MainMenu, SettingsMenu).
+/// </remarks>
 public abstract class Menu : IMenu
 {
+    /// <summary>
+    /// The state manager instance for handling application state transitions.
+    /// </summary>
     protected readonly IStateChange _stateManager;
+
+    /// <summary>
+    /// The session manager instance for managing typing sessions.
+    /// </summary>
     protected readonly ISessionAdder _sessionManager;
 
     public Menu()
@@ -11,8 +25,27 @@ public abstract class Menu : IMenu
         _stateManager = GameStateManager.Instance;
         _sessionManager = TypingSessionManager.Instance;
     }
+
+    /// <summary>
+    /// Displays the menu and handles user interaction asynchronously.
+    /// </summary>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public abstract Task ShowAsync();
 
+    /// <summary>
+    /// Displays a menu with the specified title and options.
+    /// </summary>
+    /// <param name="menuTitle">The title to display at the top of the menu.</param>
+    /// <param name="shouldClearPrev">Whether to clear the console before rendering (default: true).</param>
+    /// <param name="options">Array of menu options to display.</param>
+    /// <returns>A Task representing the asynchronous menu operation.</returns>
+    /// <example>
+    /// <code>
+    /// await Show("Main Menu", true, 
+    ///     new Options("Start Game", StartGame), 
+    ///     new Options("Exit", Exit));
+    /// </code>
+    /// </example>
     protected async Task Show(string menuTitle, bool shouldClearPrev = true, params Options[] options)
     {
         while (true)
@@ -25,7 +58,7 @@ public abstract class Menu : IMenu
             for (int i = 0; i < options.Length; i++)
             {
                 Print($"[{i + 1}] ", ConsoleColor.Cyan, false);
-                Print(options[i].optionText);
+                Print(options[i].OptionText);
             }
 
 
@@ -40,7 +73,7 @@ public abstract class Menu : IMenu
             if (choice >= 1 && choice <= options.Length)
             {
                 // Execute the selected action
-                options[choice - 1].action?.Invoke();
+                options[choice - 1].Action?.Invoke();
 
                 await ShowLoadingAnimationAsync("Loading", 2);
                 Console.Clear();
@@ -56,6 +89,13 @@ public abstract class Menu : IMenu
         }
     }
 
+    /// <summary>
+    /// Displays an animated loading spinner with a message.
+    /// </summary>
+    /// <param name="message">The message to display alongside the spinner.</param>
+    /// <param name="durationInSeconds">Total duration of the animation in seconds (default: 3).</param>
+    /// <param name="delay">Delay between animation frames in milliseconds (default: 100).</param>
+    /// <returns>A Task representing the asynchronous animation.</returns>
     private async Task ShowLoadingAnimationAsync(string message, int durationInSeconds = 3, int delay = 100)
     {
 
@@ -75,15 +115,33 @@ public abstract class Menu : IMenu
 
     }
 
+    /// <summary>
+    /// Represents a single selectable menu option.
+    /// </summary>
+    /// <remarks>
+    /// This nested type is only accessible to Menu and its derived classes.
+    /// </remarks>
     protected struct Options
     {
-        public string optionText;
-        public Action? action;
+        /// <summary>
+        /// Gets the display text for this menu option.
+        /// </summary>
+        public string OptionText { get; }
 
+        /// <summary>
+        /// Gets the action to execute when this option is selected (optional).
+        /// </summary>
+        public Action? Action { get; }
+
+        /// <summary>
+        /// Initializes a new menu option.
+        /// </summary>
+        /// <param name="optionText">The text to display for this option.</param>
+        /// <param name="action">The action to execute when selected (optional).</param>
         public Options(string optionText, Action? action = null)
         {
-            this.optionText = optionText;
-            this.action = action;
+            OptionText = optionText;
+            Action = action;
         }
     }
 }
