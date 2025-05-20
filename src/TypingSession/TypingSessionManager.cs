@@ -41,7 +41,7 @@ public class TypingSessionManager
         return false;
     }
 
-    private void RenderSessionBookInfo(SessionInfo current)
+    private static void RenderSessionBookInfo(SessionInfo current)
     {
         Console.Clear();
 
