@@ -46,7 +46,7 @@ public abstract class Component<T>
     {
         try
         {
-            LogDebug($"Saving books to [{Path.GetFullPath(path_to_object)}]: ({t_objects.Count})");
+            LogDebug($"Saving {object_name} to [{Path.GetFullPath(path_to_object)}]: ({t_objects.Count})");
 
             // Configure JSON serialization to use string representation for enums
             JsonSerializerOptions? options = new JsonSerializerOptions
@@ -74,7 +74,7 @@ public abstract class Component<T>
         {
             if (File.Exists(path_to_object))
             {
-                LogDebug("Loading books");
+                LogDebug($"Loading {object_name} from JSON.");
                 string json = File.ReadAllText(path_to_object);
                 List<T>? loadedObjects = JsonSerializer.Deserialize<List<T>>(json);
 
