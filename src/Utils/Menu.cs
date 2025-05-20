@@ -1,5 +1,6 @@
 
 namespace main;
+
 public static class Menu
 {
     public static async Task Show(string menuTitle, bool shouldClearPrev = true, params Options[] options)
@@ -8,7 +9,7 @@ public static class Menu
         {
             if (shouldClearPrev)
                 Console.Clear();
-            Console.WriteLine($"=== {menuTitle} ===");
+            Console.WriteLine($"\n=== {menuTitle} ===");
 
             // Display all menu options
             for (int i = 0; i < options.Length; i++)
