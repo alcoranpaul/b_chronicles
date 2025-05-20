@@ -46,22 +46,11 @@ public abstract class Component<T>
     /// <summary>
     /// Saves the current object list to a JSON file on disk.
     /// </summary>
-    protected virtual void Save()
+    private void Save()
     {
         try
         {
-            LogDebug($"Saving {object_name} to [{Path.GetFullPath(path_to_object)}]: ({t_objects.Count})");
-
-            // Configure JSON serialization to use string representation for enums
-            JsonSerializerOptions? options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
-            };
-
-            string json = JsonSerializer.Serialize(t_objects, options);
-            Directory.CreateDirectory(Path.GetDirectoryName(path_to_object)!); // Ensure the directory exists
-            File.WriteAllText(path_to_object, json);
+            SaveLogic();
         }
         catch (Exception ex)
         {
@@ -69,29 +58,32 @@ public abstract class Component<T>
         }
     }
 
+    protected virtual void SaveLogic()
+    {
+        LogDebug($"Saving {object_name} to [{Path.GetFullPath(path_to_object)}]: ({t_objects.Count})");
+
+        // Configure JSON serialization to use string representation for enums
+        JsonSerializerOptions? options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+        };
+
+        string json = JsonSerializer.Serialize(t_objects, options);
+        Directory.CreateDirectory(Path.GetDirectoryName(path_to_object)!); // Ensure the directory exists
+        File.WriteAllText(path_to_object, json);
+    }
+
+
+
     /// <summary>
     /// Loads the object list from the JSON save file if it exists.
     /// </summary>
-    protected virtual void Load()
+    private void Load()
     {
         try
         {
-            if (File.Exists(path_to_object))
-            {
-                LogDebug($"Loading {object_name} from JSON.");
-                string json = File.ReadAllText(path_to_object);
-                List<T>? loadedObjects = JsonSerializer.Deserialize<List<T>>(json);
-
-                if (loadedObjects != null)
-                {
-                    t_objects.Clear();
-                    t_objects.AddRange(loadedObjects);
-                }
-            }
-            else
-            {
-                LogInfo($"No saved {object_name} found. Starting fresh.");
-            }
+            LoadLogic();
         }
         catch (Exception ex)
         {
@@ -99,4 +91,23 @@ public abstract class Component<T>
         }
     }
 
+    protected virtual void LoadLogic()
+    {
+        if (File.Exists(path_to_object))
+        {
+            LogDebug($"Loading {object_name} from JSON.");
+            string json = File.ReadAllText(path_to_object);
+            List<T>? loadedObjects = JsonSerializer.Deserialize<List<T>>(json);
+
+            if (loadedObjects != null)
+            {
+                t_objects.Clear();
+                t_objects.AddRange(loadedObjects);
+            }
+        }
+        else
+        {
+            LogInfo($"No saved {object_name} found. Starting fresh.");
+        }
+    }
 }
