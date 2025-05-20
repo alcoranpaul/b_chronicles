@@ -9,6 +9,7 @@ static class Program
     private static readonly GameStateManager _stateManager = GameStateManager.Instance;
     private static readonly TypingSessionManager _sessionManager = TypingSessionManager.Instance;
     private static readonly UnlockManager _unlockManager = UnlockManager.Instance;
+    private static readonly MainMenu _mainMenu = new();
     private static User? user;
 
     static async Task Main()
@@ -110,27 +111,7 @@ static class Program
 
     private static async Task ShowMainMenu()
     {
-        _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
-
-        Menu.Options readOption = new("Read the Bible", () =>
-        {
-            QueueTypingSessions(BibleBooks.Genesis, 1, 1);
-            QueueTypingSessions(BibleBooks.Genesis, 1, 2);
-            _stateManager.ChangeStateInternal(GameStateManager.State.TypingSession);
-        });
-
-        Menu.Options playerInfoOption = new("Profile", () =>
-        {
-            _stateManager.ChangeStateInternal(GameStateManager.State.Profile);
-        });
-
-        Menu.Options exitOption = new("Exit", () =>
-        {
-            LogDebug("Requested to end application");
-            _stateManager.ChangeStateInternal(GameStateManager.State.End);
-        });
-
-        await Menu.Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
+        await _mainMenu.ShowAsync();
     }
 
     private static async Task ShowProfileMenu()
