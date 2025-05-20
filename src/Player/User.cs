@@ -29,6 +29,9 @@ public class User
                 case UnlockManager.UnlockType.Character:
                     UnlockNewCharacter(info, item.Value ?? String.Empty, item.Traits ?? new());
                     continue;
+                case UnlockManager.UnlockType.Trait:
+                    AddCharacterTrait(info, item.Character ?? String.Empty, item.Value ?? String.Empty);
+                    continue;
                 default:
                     continue;
             }
@@ -44,10 +47,23 @@ public class User
     {
         if (!info.IsValid() || String.IsNullOrEmpty(name) || traits == null || traits.Count <= 0) return;
 
-        LogDebug($"Unlcoked Character of name [{name}]!");
+        LogDebug($"Unlocked a new Character of name [{name}]!");
         // If not, add character
         Character newCharacter = new(name, traits);
         characterComponent.AddObject(newCharacter);
+    }
+
+    private void AddCharacterTrait(BookInfo info, string name, string value)
+    {
+        if (!info.IsValid() || String.IsNullOrEmpty(name) || String.IsNullOrEmpty(value)) return;
+        Character? existingCharacter = characterComponent.Objects.Find((item) => item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+
+        if (existingCharacter == null) return;
+
+
+        LogDebug($"Unlocked a new Trait(s) for [{existingCharacter.Name}]!");
+        existingCharacter.AddTrait(value);
+
     }
 
     public void UnlockCharacter(Bible.BibleBooks book, int chapter, int verse, UnlockManager.Unlock unlockedData)
