@@ -1,29 +1,36 @@
 using Bible;
 
-public class TypingSessionManager
+namespace main;
+
+public class TypingSessionManager : ISessionAdder
 {
-    private readonly Queue<SessionInfo> sessions;
+    public static TypingSessionManager Instance { get; private set; } = new TypingSessionManager();
+    private readonly Queue<SessionInfo> _sessions;
     public static event Action<BibleBooks, int, int>? OnSessionCompleted;
 
-    public TypingSessionManager()
+    private TypingSessionManager()
     {
-        sessions = new();
+        _sessions = new();
     }
 
-    public void AddSession(SessionInfo session)
-    {
-        sessions.Enqueue(session);
-    }
+    // Explicit implementation - only accessible via ISessionAdder
+    void ISessionAdder.AddSession(BibleBooks book, int chapter, int verse)
+        => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
-    public void AddSession(BibleBooks book, int chapter, int verse)
-    {
-        sessions.Enqueue(new SessionInfo(book, chapter, verse));
-    }
+    // Public static convenience method (alternative to interface)
+    public static void AddSessionStatic(BibleBooks book, int chapter, int verse)
+        => Instance.AddSessionInternal(book, chapter, verse);
 
-    public bool RunNext()
+    // Internal method (only accessible within the assembly)
+    internal void AddSessionInternal(BibleBooks book, int chapter, int verse)
+        => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
+
+
+
+    internal bool RunNext()
     {
-        if (sessions.Count == 0) return true;
-        SessionInfo currentInfo = sessions.Peek();
+        if (_sessions.Count == 0) return true;
+        SessionInfo currentInfo = _sessions.Peek();
         TypingSession current = currentInfo.session;
         switch (current.CurrentState)
         {
@@ -35,11 +42,11 @@ public class TypingSessionManager
                 current.RunStep();
                 break;
             case TypingSession.State.Completed:
-                sessions.Dequeue();
+                _sessions.Dequeue();
                 OnSessionCompleted?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
             case TypingSession.State.Cancelled:
-                sessions.Dequeue();
+                _sessions.Dequeue();
                 return true;
         }
         return false;
@@ -56,8 +63,8 @@ public class TypingSessionManager
         Console.ResetColor();
     }
 
-    public bool HasSessions() => sessions.Count > 0;
-    public static void End()
+    internal bool HasSessions() => _sessions.Count > 0;
+    internal void End()
     {
         OnSessionCompleted = null;
     }

@@ -7,8 +7,8 @@ namespace main;
 static class Program
 {
     private static readonly GameStateManager _stateManager = new();
-    private static readonly TypingSessionManager sessionManager = new();
-    private static readonly UnlockManager unlockManager = UnlockManager.Instance;
+    private static readonly TypingSessionManager _sessionManager = TypingSessionManager.Instance;
+    private static readonly UnlockManager _unlockManager = UnlockManager.Instance;
     private static User? user;
 
     static async Task Main()
@@ -77,26 +77,26 @@ static class Program
         if (user != null)
         {
             user.End();
-            TypingSessionManager.End();
-            unlockManager.End();
+            _sessionManager.End();
+            _unlockManager.End();
         }
     }
 
     private static async Task ProcessSessions()
     {
-        if (!sessionManager.HasSessions())
+        if (!_sessionManager.HasSessions())
         {
             Print("No more sessions available.");
             _stateManager.ChangeState(GameStateManager.State.MainMenu);
             return;
         }
 
-        bool isInstanceSessionDone = sessionManager.RunNext();
+        bool isInstanceSessionDone = _sessionManager.RunNext();
         if (isInstanceSessionDone)
         {
             Print("\n\n✔ Verse complete!");
             // Has next sesison queued?
-            if (sessionManager.HasSessions())
+            if (_sessionManager.HasSessions())
             {
                 await ShowContinueMenu();
             }
@@ -160,7 +160,7 @@ static class Program
 
     private static void QueueTypingSessions(BibleBooks book, int chapter, int verse)
     {
-        sessionManager.AddSession(book, chapter, verse);
+        _sessionManager.AddSessionInternal(book, chapter, verse);
     }
 
     private static void ConfigureLogging()
