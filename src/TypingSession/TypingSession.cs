@@ -37,7 +37,6 @@ public class TypingSession
 
         if (completed)
         {
-            Console.WriteLine("\n\n✔ Verse complete!");
             ChangeState(State.Completed);
             return true;
         }
