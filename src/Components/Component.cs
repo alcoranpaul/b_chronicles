@@ -46,7 +46,7 @@ public abstract class Component<T>
     /// <summary>
     /// Saves the current object list to a JSON file on disk.
     /// </summary>
-    private void Save()
+    protected virtual void Save()
     {
         try
         {
@@ -72,7 +72,7 @@ public abstract class Component<T>
     /// <summary>
     /// Loads the object list from the JSON save file if it exists.
     /// </summary>
-    private void Load()
+    protected virtual void Load()
     {
         try
         {
