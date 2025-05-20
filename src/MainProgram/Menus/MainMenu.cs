@@ -4,18 +4,9 @@ using Bible;
 
 namespace main;
 
-public class MainMenu : IMenu
+public class MainMenu : Menu
 {
-    private readonly IStateChange _stateManager;
-    private readonly ISessionAdder _sessionManager;
-
-    public MainMenu()
-    {
-        _stateManager = GameStateManager.Instance;
-        _sessionManager = TypingSessionManager.Instance;
-    }
-
-    public async Task ShowAsync()
+    public override async Task ShowAsync()
     {
         _stateManager.ChangeState(GameStateManager.State.MainMenu);
 
@@ -37,6 +28,6 @@ public class MainMenu : IMenu
             _stateManager.ChangeState(GameStateManager.State.End);
         });
 
-        await Menu.Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
+        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
     }
 }

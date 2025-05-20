@@ -4,26 +4,17 @@ using Bible;
 
 namespace main;
 
-public class ContinueMenu : IMenu
+public class ContinueMenu : Menu
 {
-    private readonly IStateChange _stateManager;
-    private readonly ISessionAdder _sessionManager;
-
-    public ContinueMenu()
+    public override async Task ShowAsync()
     {
-        _stateManager = GameStateManager.Instance;
-        _sessionManager = TypingSessionManager.Instance;
-    }
+        Options option1 = new Options("Continue");
 
-    public async Task ShowAsync()
-    {
-        Menu.Options option1 = new Menu.Options("Continue");
-
-        Menu.Options option2 = new Menu.Options("Main Menu", () =>
+        Options option2 = new Options("Main Menu", () =>
         {
             _stateManager.ChangeState(GameStateManager.State.MainMenu);
         });
 
-        await Menu.Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
+        await Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
     }
 }

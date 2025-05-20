@@ -1,9 +1,19 @@
 
 namespace main;
 
-public static class Menu
+public abstract class Menu : IMenu
 {
-    public static async Task Show(string menuTitle, bool shouldClearPrev = true, params Options[] options)
+    protected readonly IStateChange _stateManager;
+    protected readonly ISessionAdder _sessionManager;
+
+    public Menu()
+    {
+        _stateManager = GameStateManager.Instance;
+        _sessionManager = TypingSessionManager.Instance;
+    }
+    public abstract Task ShowAsync();
+
+    protected async Task Show(string menuTitle, bool shouldClearPrev = true, params Options[] options)
     {
         while (true)
         {
@@ -46,7 +56,7 @@ public static class Menu
         }
     }
 
-    private static async Task ShowLoadingAnimationAsync(string message, int durationInSeconds = 3, int delay = 100)
+    private async Task ShowLoadingAnimationAsync(string message, int durationInSeconds = 3, int delay = 100)
     {
 
         Console.Write(message + " "); // Display the message
