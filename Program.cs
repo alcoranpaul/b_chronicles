@@ -33,6 +33,7 @@ static class Program
         Console.Clear();
 
         user = new();
+        UnlockManager.OnUnlockedEvent += OnUnlockedEvent;
 
         if (!user.HasBooks)
         {
@@ -40,6 +41,11 @@ static class Program
 
             user.AddBook(BibleBooks.Genesis);
         }
+    }
+
+    private static void OnUnlockedEvent(UnlockManager.UnlockEntry entry)
+    {
+
     }
 
     private static void RestoreConsoleSettings()
@@ -62,7 +68,7 @@ static class Program
                     break;
 
                 default:
-                    Console.WriteLine("Unknown state. Returning to the main menu...");
+                    Print("Unknown state. Returning to the main menu...");
                     ChangeState(State.MainMenu);
                     break;
             }
@@ -84,21 +90,23 @@ static class Program
     {
         if (!sessionManager.HasSessions())
         {
-            Console.WriteLine("No more sessions available.");
+            Print("No more sessions available.");
             ChangeState(State.MainMenu);
             return;
         }
 
-        bool isSessionDone = sessionManager.RunNext();
-        if (isSessionDone)
+        bool isInstanceSessionDone = sessionManager.RunNext();
+        if (isInstanceSessionDone)
         {
+            Print("\n\n✔ Verse complete!");
+            // Has next sesison queued?
             if (sessionManager.HasSessions())
             {
                 await ShowContinueMenu();
             }
             else
             {
-                Console.WriteLine("All sessions completed.");
+                Print("All sessions completed.");
                 ChangeState(State.MainMenu);
             }
         }
