@@ -7,7 +7,7 @@ namespace main;
 static class Program
 {
     private static readonly TypingSessionManager sessionManager = new();
-    private static readonly UnlockManager unlockManager = new();
+    private static readonly UnlockManager unlockManager = UnlockManager.Instance;
     private static State state = State.MainMenu;
     private static User? user;
 
@@ -33,19 +33,14 @@ static class Program
         Console.Clear();
 
         user = new();
-        UnlockManager.OnUnlockedEvent += OnUnlockedEvent;
+
 
         if (!user.HasBooks)
         {
             LogDebug($"User has no books.");
 
-            user.AddBook(BibleBooks.Genesis);
+            user.AddBibleBook(BibleBooks.Genesis);
         }
-    }
-
-    private static void OnUnlockedEvent(UnlockManager.UnlockEntry entry)
-    {
-
     }
 
     private static void RestoreConsoleSettings()

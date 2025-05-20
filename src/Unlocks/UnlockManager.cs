@@ -6,9 +6,10 @@ namespace main;
 
 public class UnlockManager
 {
-    public static Action<UnlockEntry>? OnUnlockedEvent;
+    public static UnlockManager Instance { get; private set; } = new UnlockManager();
+    public static Action<BibleBooks, int, int, UnlockEntry>? OnUnlockedEvent;
 
-    public UnlockManager()
+    private UnlockManager()
     {
         TypingSessionManager.OnSessionCompleted += OnSessionCompleted;
     }
@@ -23,7 +24,7 @@ public class UnlockManager
             if (unlockData == null) return; // No unlock
 
             UnlockEntry? unlockable = GetUnlock(book, chapter, verse, unlockData);
-            OnUnlockedEvent?.Invoke(unlockable);
+            OnUnlockedEvent?.Invoke(book, chapter, verse, unlockable);
         }
         catch (FileNotFoundException)
         {
