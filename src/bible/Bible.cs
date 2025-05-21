@@ -5,7 +5,10 @@ namespace Bible;
 public class Book
 {
     public string Name { get; private set; }
+    public BibleBooks NameAsEnum => Enum.Parse<BibleBooks>(Name);
     private readonly List<Chapter> chapters;
+
+
 
 
     public Book(BibleBooks bookName)
@@ -58,9 +61,7 @@ public class Book
         List<Book> books = new List<Book>();
 
         foreach (BibleBooks item in Enum.GetValues<BibleBooks>())
-        {
-            Console.WriteLine(item.ToString());
-        }
+            books.Add(new(item));
 
         return books;
     }
@@ -99,9 +100,32 @@ public class Book
         return chapters[chapter - 1].Verses[verse - 1].Text;
     }
 
+    public int GetChaptersCount()
+    {
+        return chapters.Count;
+    }
+
+    public int GetVerseCount(int chapterNumber)
+    {
+        if (chapterNumber <= 0 || chapterNumber > chapters.Count) return -1;
+
+        return chapters[chapterNumber].Verses.Length;
+    }
+
     public override string ToString()
     {
         return $"{Name} - {chapters.Count} chapters";
+    }
+
+    // Override Equals and GetHashCode to compare by Name
+    public override bool Equals(object? obj)
+    {
+        return obj is Book other && Name == other.Name;
+    }
+
+    public override int GetHashCode()
+    {
+        return Name.GetHashCode();
     }
 
 

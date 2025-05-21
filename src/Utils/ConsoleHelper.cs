@@ -84,6 +84,7 @@ public static class ConsoleHelper
         [CallerLineNumber] int lineNumber = 0)
     {
         Log(LogLevel.Error, message, filePath, lineNumber);
+        Environment.Exit(1);
     }
 
     public static void LogCritical(
