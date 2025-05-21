@@ -34,4 +34,5 @@ venv/
 
 logs/
 
-json/player
+# Ignore all files in the player directory
+json/player/
