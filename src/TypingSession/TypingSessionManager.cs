@@ -7,6 +7,8 @@ public class TypingSessionManager : ISessionAdder
     public static TypingSessionManager Instance { get; private set; } = new TypingSessionManager();
     private readonly Queue<SessionInfo> _sessions;
     public static event Action<BibleBooks, int, int>? OnSessionCompleted;
+    public static event Action<BibleBooks, int, int>? OnSessionStarted;
+    public static event Action<BibleBooks, int, int>? OnSessionCanceled;
 
     private TypingSessionManager()
     {
@@ -34,6 +36,7 @@ public class TypingSessionManager : ISessionAdder
             case TypingSession.State.NotStarted:
                 RenderSessionBookInfo(currentInfo);
                 current.Initialize();
+                OnSessionStarted?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 break;
             case TypingSession.State.InProgress:
                 current.RunStep();
@@ -44,6 +47,7 @@ public class TypingSessionManager : ISessionAdder
                 return true;
             case TypingSession.State.Cancelled:
                 _sessions.Dequeue();
+                OnSessionCanceled?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
         }
         return false;
@@ -85,13 +89,13 @@ public class TypingSessionManager : ISessionAdder
         {
             try
             {
-                Book b = Book.GetBook(book);
+                Book b = Player.User.Instance.RequestBibleReading();
                 string verseText = b.GetVerse(chapter, verse);
                 return new TypingSession(verseText);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating session: {ex.Message}");
+                LogWarning($"Error creating session: {ex.Message}");
                 throw;
             }
         }
