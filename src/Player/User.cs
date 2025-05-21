@@ -5,16 +5,39 @@ namespace Player;
 
 public class User
 {
+    public static User Instance { get; private set; } = new User();
     private readonly BookComponent bookComponent;
+    public List<Book> Books => bookComponent.Objects;
     private readonly CharacterComponent characterComponent;
+    public List<Character> Characters => characterComponent.Objects;
 
     public bool HasBooks => bookComponent.IsDefined;
-    public User()
+
+    private User()
     {
         bookComponent = new();
         characterComponent = new();
-        UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
 
+        if (!HasBooks)
+        {
+            LogDebug($"User has no books! Adding the book of Genesis");
+            AddBibleBook(Bible.BibleBooks.Genesis);
+        }
+
+        UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
+        TypingSessionManager.OnSessionCompleted += OnVerseCompleted;
+        TypingSessionManager.OnSessionStarted += OnStartReadingVerse;
+
+    }
+
+    private void OnStartReadingVerse(Bible.BibleBooks bookName, int chapter, int verse)
+    {
+        bookComponent.StartNewReading(bookName, chapter, verse);
+    }
+
+    private void OnVerseCompleted(Bible.BibleBooks bookName, int chapter, int verse)
+    {
+        bookComponent.FinishReading(bookName, chapter, verse);
     }
 
     private void OnUnlockedEvent(Bible.BibleBooks books, int chapter, int verse, UnlockManager.UnlockEntry entry)
@@ -72,6 +95,8 @@ public class User
         characterComponent.End();
         UnlockManager.Instance.OnUnlockedEvent -= OnUnlockedEvent;
     }
+
+    public Bible.Book RequestBibleReading() => bookComponent.RequestBibleReading();
 
     private struct BookInfo
     {
