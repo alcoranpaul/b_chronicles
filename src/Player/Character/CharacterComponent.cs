@@ -10,7 +10,7 @@ public class CharacterComponent : Component<Character>
     /// Initializes a new instance of the <see cref="CharacterComponent"/> class
     /// and loads books from the saved JSON file if it exists.
     /// </summary>
-    public CharacterComponent() : base("Character")
+    public CharacterComponent() : base("character")
     {
 
     }
