@@ -9,24 +9,26 @@ static class Program
     private static readonly GameStateManager _stateManager = GameStateManager.Instance;
     private static readonly TypingSessionManager _sessionManager = TypingSessionManager.Instance;
     private static readonly UnlockManager _unlockManager = UnlockManager.Instance;
+
     private static readonly MainMenu _mainMenu = new();
     private static readonly ProfileMenu _profileMenu = new();
     private static readonly ContinueMenu _continueMenu = new();
-    private static User? user;
+    private static readonly User _user = User.Instance;
 
     static async Task Main()
     {
         try
         {
             InitializeApp();
-
             await RunApp();
 
         }
-        finally
+        catch (Exception ex)
         {
-            RestoreConsoleSettings();
+            LogError($"Error has been cathced: {ex}");
         }
+
+        RestoreConsoleSettings();
     }
 
     private static void InitializeApp()
@@ -34,16 +36,6 @@ static class Program
         Console.CursorVisible = false;
         ConfigureLogging();
         Console.Clear();
-
-        user = new();
-
-
-        if (!user.HasBooks)
-        {
-            LogDebug($"User has no books.");
-
-            user.AddBibleBook(BibleBooks.Genesis);
-        }
     }
 
 
@@ -72,14 +64,14 @@ static class Program
             }
         }
 
-        OnEnded();
+        End();
     }
 
-    private static void OnEnded()
+    private static void End()
     {
-        if (user != null)
+        if (_user != null)
         {
-            user.End();
+            _user.End();
             _sessionManager.End();
             _unlockManager.End();
         }
