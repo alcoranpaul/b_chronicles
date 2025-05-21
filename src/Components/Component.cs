@@ -6,7 +6,7 @@ public abstract class Component<T>
 {
     protected readonly List<T> t_objects;
     public List<T> Objects => t_objects;
-    protected readonly string path_to_object;
+    private readonly string path_to_object;
     protected readonly string object_name;
     public bool IsDefined => t_objects.Count > 0;
 
