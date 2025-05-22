@@ -58,7 +58,7 @@ public sealed class BookTracker : IDisposable
 
         if (!_metadata.GetNextBookName(book, out BookNames nextBook))
         {
-            LogError($"Next Book is Null");
+            LogError($"Next Book is Null"); // TODO: Handle case when Revelation is finished
         }
 
         return (nextBook, 1, 1);
