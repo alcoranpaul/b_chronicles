@@ -27,8 +27,8 @@ public class TypingSession
         ConsoleKeyInfo key = Console.ReadKey(true);
         if (key.Key == ConsoleKey.F2)
         {
-            Console.WriteLine("\n[F2] Triggered Session cancelled.");
-            ChangeState(State.Cancelled);
+            LogDebug("\n[F2] Triggered Session cancelled.");
+            ChangeState(newState: State.Cancelled);
             return false;
         }
         engine.HandleKeyPress(key);
