@@ -86,7 +86,7 @@ public abstract class Menu : IMenu
             else
             {
                 Print("\n❌ Invalid option.", ConsoleColor.Red);
-                Print("Try again.");
+                Print("\nTry again.");
                 await ShowLoadingAnimationAsync("Returning to the menu", 2);
 
             }
