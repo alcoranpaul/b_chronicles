@@ -23,7 +23,7 @@ public sealed class BookMetadata
     public BookMetadata()
     {
         _books = Bible.Book.GetAllBooks().ToDictionary(book => book.NameAsEnum);
-
+        LogDebug($"{_books}");
         // Initialize chapter counts
         _chapterCounts = new();
         foreach (var book in _books.Values)
@@ -86,13 +86,20 @@ public sealed class BookMetadata
     /// </example>
     public bool IsValidPassage(Bible.BookNames bookName, int chapter, int verse)
     {
-        if (!_books.TryGetValue(bookName, out var bookObj))
+        if (!_books.TryGetValue(bookName, out Bible.Book? bookObj))
+        {
+            LogDebug($"Cannot retrieve {bookName} {chapter}:{verse}");
             return false;
+        }
 
-        return chapter >= 1 &&
+        bool isChapterVerseValid = chapter >= 1 &&
                chapter <= bookObj.GetChaptersCount() &&
                verse >= 1 &&
                verse <= bookObj.GetVerseCount(chapter);
+
+        LogDebug($"Is Chapter and Verse valid? {isChapterVerseValid}");
+
+        return isChapterVerseValid;
     }
 
     /// <summary>

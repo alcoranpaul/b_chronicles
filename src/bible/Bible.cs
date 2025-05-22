@@ -82,9 +82,6 @@ public class Book
     {
         try
         {
-            chapter--;
-            verse--;
-
             if (chapter < 1 || chapter > chapters.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(chapter), "Chapter number is out of range.");
@@ -112,7 +109,11 @@ public class Book
     public int GetVerseCount(int chapterNumber)
     {
         chapterNumber--; // Decrement for 0-indexing
-        if (chapterNumber <= 0 || chapterNumber > chapters.Count) return -1;
+        if (chapterNumber < 0 || chapterNumber > chapters.Count)
+        {
+            LogDebug($"Requested Verse count for the book of ({Name}). Input: {chapterNumber} -- Chapter Count: {chapters.Count}");
+            return -1;
+        }
 
         return chapters[chapterNumber].Verses.Length;
     }
