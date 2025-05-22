@@ -97,6 +97,7 @@ static class Program
             }
             else
             {
+                LogDebug("All sessions completed.");
                 Print("All sessions completed.");
                 _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
             }
