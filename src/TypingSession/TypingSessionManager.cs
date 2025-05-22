@@ -89,8 +89,9 @@ public class TypingSessionManager : ISessionAdder
         {
             try
             {
-                Book b = Player.User.Instance.RequestBibleReading();
-                string verseText = b.GetVerse(chapter, verse);
+                (BookNames book, int chapter, int verse) = Player.User.Instance.RequestBibleReading();
+                Book reqBook = Book.GetBook(book);
+                string verseText = reqBook.GetVerse(chapter, verse);
                 return new TypingSession(verseText);
             }
             catch (Exception ex)

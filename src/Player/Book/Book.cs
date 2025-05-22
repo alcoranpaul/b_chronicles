@@ -17,21 +17,6 @@ public class Book : IEquatable<Book>
 
     public void IncrementChapters()
     {
-        // Get the raw book
-        // Bible.Book? rawBook = Bible.BibleManager.GetBook(Name);
-        // if (rawBook == null)
-        // {
-        //     LogError($"Cannot find Raw Data of the book of {Name}");
-        //     return;
-        // }
-        // // Figure out if the verse is at max
-        // int versesCount = rawBook.GetVerseCount(ChaptersRead);
-        // if (versesCount == VersesRead)
-        //     ChaptersRead++;
-        // else
-        // {
-        //     LogError($"Attempted to increase chapters when verse is not completed");
-        // }
         ChaptersRead++;
     }
     public void DecrementChapters() => ChaptersRead--;

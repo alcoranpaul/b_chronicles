@@ -55,13 +55,18 @@ public sealed class BookMetadata
     /// var next = metadata.GetNextBook(Bible.BookNames.Genesis); // Returns Exodus
     /// </code>
     /// </example>
-    public Bible.BookNames? GetNextBook(Bible.BookNames currentBook)
+    public bool GetNextBookName(Bible.BookNames currentBook, out Bible.BookNames nextBook)
     {
         Bible.BookNames[] allBooks = Enum.GetValues<Bible.BookNames>();
         int currentIndex = Array.IndexOf(allBooks, currentBook);
         int nextIndex = currentIndex + 1;
-
-        return nextIndex < allBooks.Length ? allBooks[nextIndex] : null;
+        if (nextIndex < allBooks.Length)
+        {
+            nextBook = allBooks[nextIndex];
+            return true;
+        }
+        nextBook = currentBook;
+        return false;
     }
 
     /// <summary>
