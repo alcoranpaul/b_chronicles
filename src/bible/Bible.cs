@@ -22,9 +22,10 @@ public class Book
         string book_file_path = Path.Combine("json", $"{lower_name}");
         string[] allChapterFiles = Directory.GetFiles(book_file_path, "*.json");
 
-
+        int index = 0;
         foreach (string chapterFile in allChapterFiles)
         {
+            index++;
             string json = File.ReadAllText(chapterFile);
 
             // Deserialize the JSON into the wrapper class
@@ -47,6 +48,7 @@ public class Book
 
                 Chapter chapter = new Chapter(verses);
                 chapters.Add(chapter);
+                LogDebug($"Adding Chapter {index} for book [{Name}]");
             }
             else
             {
@@ -58,10 +60,9 @@ public class Book
 
     public static List<Book> GetAllBooks()
     {
-        List<Book> books = new List<Book>();
-
-        foreach (BookNames item in Enum.GetValues<BookNames>())
-            books.Add(new(item));
+        List<Book> books = [new(BookNames.Genesis)];
+        // foreach (BookNames item in Enum.GetValues<BookNames>())
+        //     books.Add(item: new(item));
 
         return books;
     }
@@ -81,6 +82,9 @@ public class Book
     {
         try
         {
+            chapter--;
+            verse--;
+
             if (chapter < 1 || chapter > chapters.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(chapter), "Chapter number is out of range.");
@@ -107,6 +111,7 @@ public class Book
 
     public int GetVerseCount(int chapterNumber)
     {
+        chapterNumber--; // Decrement for 0-indexing
         if (chapterNumber <= 0 || chapterNumber > chapters.Count) return -1;
 
         return chapters[chapterNumber].Verses.Length;
