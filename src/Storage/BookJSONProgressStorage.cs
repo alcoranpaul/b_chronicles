@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bible;
 
 namespace Player.BibleBook;
 
@@ -66,6 +67,10 @@ public sealed class JsonProgressStorage : IBookProgressStorage
         {
             string? json = File.ReadAllText(_filePath);
             _cachedProgress = JsonSerializer.Deserialize<ProgressData>(json, _jsonOptions);
+            if (_cachedProgress == null)
+            {
+                return (BookNames.Genesis, 1, 1);
+            }
             if (_cachedProgress!.LastRead != null)
             {
                 LogDebug($"Loading next chapter and verse");
