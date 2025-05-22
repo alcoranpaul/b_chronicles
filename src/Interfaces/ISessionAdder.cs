@@ -2,6 +2,6 @@ using Bible;
 
 public interface ISessionAdder
 {
-    void AddSession(BibleBooks book, int chapter, int verse);
-    public static event Action<BibleBooks, int, int>? OnSessionCompleted;
+    void AddSession(BookNames book, int chapter, int verse);
+    public static event Action<BookNames, int, int>? OnSessionCompleted;
 }

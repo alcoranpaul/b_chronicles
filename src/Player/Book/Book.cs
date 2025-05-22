@@ -1,14 +1,14 @@
 
 
-namespace Player;
+namespace Player.BibleBook;
 
 public class Book : IEquatable<Book>
 {
-    public Bible.BibleBooks Name { get; private set; }
+    public Bible.BookNames Name { get; private set; }
     public int ChaptersRead { get; private set; }
     public int VersesRead { get; private set; }
 
-    public Book(Bible.BibleBooks name)
+    public Book(Bible.BookNames name)
     {
         Name = name;
         ChaptersRead = 0;

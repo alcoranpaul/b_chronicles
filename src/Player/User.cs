@@ -21,7 +21,7 @@ public class User
         if (!HasBooks)
         {
             LogDebug($"User has no books! Adding the book of Genesis");
-            AddBibleBook(Bible.BibleBooks.Genesis);
+            AddBibleBook(Bible.BookNames.Genesis);
         }
 
         UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
@@ -30,17 +30,17 @@ public class User
 
     }
 
-    private void OnStartReadingVerse(Bible.BibleBooks bookName, int chapter, int verse)
+    private void OnStartReadingVerse(Bible.BookNames bookName, int chapter, int verse)
     {
         bookComponent.StartNewReading(bookName, chapter, verse);
     }
 
-    private void OnVerseCompleted(Bible.BibleBooks bookName, int chapter, int verse)
+    private void OnVerseCompleted(Bible.BookNames bookName, int chapter, int verse)
     {
         bookComponent.FinishReading(bookName, chapter, verse);
     }
 
-    private void OnUnlockedEvent(Bible.BibleBooks books, int chapter, int verse, UnlockManager.UnlockEntry entry)
+    private void OnUnlockedEvent(Bible.BookNames books, int chapter, int verse, UnlockManager.UnlockEntry entry)
     {
         if (entry == null || entry.Unlocks == null || entry.Unlocks.Count <= 0) return;
 
@@ -61,7 +61,7 @@ public class User
         }
     }
 
-    public void AddBibleBook(Bible.BibleBooks book)
+    public void AddBibleBook(Bible.BookNames book)
     {
         bookComponent.AddObject(new Book(book));
     }
@@ -100,11 +100,11 @@ public class User
 
     private struct BookInfo
     {
-        public Bible.BibleBooks Book { get; private set; }
+        public Bible.BookNames Book { get; private set; }
         public int Chapter { get; private set; }
         public int Verse { get; private set; }
 
-        public BookInfo(Bible.BibleBooks book, int chapter, int verse)
+        public BookInfo(Bible.BookNames book, int chapter, int verse)
         {
             Book = book;
             Chapter = chapter;

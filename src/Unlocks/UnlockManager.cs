@@ -7,14 +7,14 @@ namespace main;
 public class UnlockManager
 {
     public static UnlockManager Instance { get; private set; } = new UnlockManager();
-    public Action<BibleBooks, int, int, UnlockEntry>? OnUnlockedEvent;
+    public Action<BookNames, int, int, UnlockEntry>? OnUnlockedEvent;
 
     private UnlockManager()
     {
         TypingSessionManager.OnSessionCompleted += OnSessionCompleted;
     }
 
-    private void OnSessionCompleted(BibleBooks book, int chapter, int verse)
+    private void OnSessionCompleted(BookNames book, int chapter, int verse)
     {
         string fileName = GetUnlockJSONName(book, verse) + ".json";
 
@@ -38,7 +38,7 @@ public class UnlockManager
     }
 
 
-    private UnlockEntry GetUnlock(BibleBooks book, int chapter, int verse, UnlockData unlockData)
+    private UnlockEntry GetUnlock(BookNames book, int chapter, int verse, UnlockData unlockData)
     {
         string targetKey = GetBookFullName(book, chapter, verse);
 
@@ -57,7 +57,7 @@ public class UnlockManager
     }
 
 
-    private static UnlockData? FindUnlockData(BibleBooks book, string fileName)
+    private static UnlockData? FindUnlockData(BookNames book, string fileName)
     {
         string filePath = Path.Combine("json", "unlocks", $"{book.ToString().ToLower()}", fileName);
 
@@ -89,12 +89,12 @@ public class UnlockManager
 
 
 
-    private string GetBookFullName(BibleBooks book, int chapter, int verse)
+    private string GetBookFullName(BookNames book, int chapter, int verse)
     {
         return $"{book.ToString().ToLower()} {chapter}:{verse}";
     }
 
-    private string GetUnlockJSONName(BibleBooks book, int verse)
+    private string GetUnlockJSONName(BookNames book, int verse)
     {
         return $"unlocks_{book.ToString().ToLower()}_chapter_{verse}";
     }

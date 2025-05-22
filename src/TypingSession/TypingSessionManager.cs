@@ -6,9 +6,9 @@ public class TypingSessionManager : ISessionAdder
 {
     public static TypingSessionManager Instance { get; private set; } = new TypingSessionManager();
     private readonly Queue<SessionInfo> _sessions;
-    public static event Action<BibleBooks, int, int>? OnSessionCompleted;
-    public static event Action<BibleBooks, int, int>? OnSessionStarted;
-    public static event Action<BibleBooks, int, int>? OnSessionCanceled;
+    public static event Action<BookNames, int, int>? OnSessionCompleted;
+    public static event Action<BookNames, int, int>? OnSessionStarted;
+    public static event Action<BookNames, int, int>? OnSessionCanceled;
 
     private TypingSessionManager()
     {
@@ -16,12 +16,12 @@ public class TypingSessionManager : ISessionAdder
     }
 
     // Explicit implementation - only accessible via ISessionAdder
-    void ISessionAdder.AddSession(BibleBooks book, int chapter, int verse)
+    void ISessionAdder.AddSession(BookNames book, int chapter, int verse)
         => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
 
     // Internal method (only accessible within the assembly)
-    internal void AddSessionInternal(BibleBooks book, int chapter, int verse)
+    internal void AddSessionInternal(BookNames book, int chapter, int verse)
         => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
 
@@ -71,13 +71,13 @@ public class TypingSessionManager : ISessionAdder
     }
     public struct SessionInfo
     {
-        public BibleBooks book;
+        public BookNames book;
         public int chapter;
         public int verse;
         public TypingSession session;
 
 
-        public SessionInfo(BibleBooks book, int chapter, int verse)
+        public SessionInfo(BookNames book, int chapter, int verse)
         {
             this.book = book;
             this.chapter = chapter;

@@ -1,7 +1,7 @@
 using System.Text.Json;
 
 
-namespace Player;
+namespace Player.BibleBook;
 
 /// <summary>
 /// Manages the collection of books that the user has read,
@@ -27,7 +27,7 @@ Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
 
     }
 
-    internal void StartNewReading(Bible.BibleBooks bookName, int chapter, int verse)
+    internal void StartNewReading(Bible.BookNames bookName, int chapter, int verse)
     {
         // Find book
         if (!FindBook(bookName, out Book? book) || book == null) return;
@@ -45,7 +45,7 @@ Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
         CurrentBook = book;
     }
 
-    private bool FindBook(Bible.BibleBooks bookName, out Book? book)
+    private bool FindBook(Bible.BookNames bookName, out Book? book)
     {
         Book? foundBook = Objects.Find(item => item.Name == bookName);
         if (foundBook == null)
@@ -58,7 +58,7 @@ Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
         return true;
     }
 
-    internal void FinishReading(Bible.BibleBooks bookName, int chapter, int verse)
+    internal void FinishReading(Bible.BookNames bookName, int chapter, int verse)
     {
         if (CurrentBook == null || CurrentBook.Name != bookName)
         {
@@ -89,7 +89,7 @@ Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
         if (CurrentBook is not null)
         {
             LogDebug($"Requested confirmed! Continuing from X");
-            return Bible.Book.GetBook(Bible.BibleBooks.Genesis);
+            return Bible.Book.GetBook(Bible.BookNames.Genesis);
         }
         else
         {
@@ -143,11 +143,11 @@ Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
 
     private struct BookProgress
     {
-        public Bible.BibleBooks Name { get; private set; }
+        public Bible.BookNames Name { get; private set; }
         public int Chapter { get; private set; }
         public int Verse { get; private set; }
 
-        public BookProgress(Bible.BibleBooks Name)
+        public BookProgress(Bible.BookNames Name)
         {
             this.Name = Name;
             Chapter = 0;

@@ -5,13 +5,13 @@ namespace Bible;
 public class Book
 {
     public string Name { get; private set; }
-    public BibleBooks NameAsEnum => Enum.Parse<BibleBooks>(Name);
+    public BookNames NameAsEnum => Enum.Parse<BookNames>(Name);
     private readonly List<Chapter> chapters;
 
 
 
 
-    public Book(BibleBooks bookName)
+    public Book(BookNames bookName)
     {
         Name = bookName.ToString();
         chapters = new List<Chapter>();
@@ -60,13 +60,13 @@ public class Book
     {
         List<Book> books = new List<Book>();
 
-        foreach (BibleBooks item in Enum.GetValues<BibleBooks>())
+        foreach (BookNames item in Enum.GetValues<BookNames>())
             books.Add(new(item));
 
         return books;
     }
 
-    public static Book GetBook(BibleBooks bookName)
+    public static Book GetBook(BookNames bookName)
     {
         return new Book(bookName);
     }
