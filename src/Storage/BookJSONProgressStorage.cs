@@ -69,7 +69,7 @@ public sealed class JsonProgressStorage : IBookProgressStorage
             if (_cachedProgress!.LastRead != null)
             {
                 LogDebug($"Loading next chapter and verse");
-                return (_cachedProgress!.CurrentBook, _cachedProgress.NextChapter, _cachedProgress.NextVerse);
+                return (_cachedProgress!.NextBook, _cachedProgress.NextChapter, _cachedProgress.NextVerse);
             }
 
             return (_cachedProgress!.CurrentBook, _cachedProgress.CurrentChapter, _cachedProgress.CurrentVerse);

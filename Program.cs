@@ -12,7 +12,7 @@ static class Program
 
     private static readonly MainMenu _mainMenu = new();
     private static readonly ProfileMenu _profileMenu = new();
-    private static readonly ContinueMenu _continueMenu = new();
+    private static readonly ContinueMenu _continueReadingMenu = new();
     private static readonly User _user = User.Instance;
 
     static async Task Main()
@@ -91,17 +91,9 @@ static class Program
         {
             Print("\n\n✔ Verse complete!");
             // Has next sesison queued?
-            if (_sessionManager.HasSessions())
-            {
-                await _continueMenu.ShowAsync();
-            }
-            else
-            {
-                LogDebug("All sessions completed.");
-                Print("All sessions completed.");
-                _stateManager.ChangeStateInternal(GameStateManager.State.MainMenu);
-            }
+            await _continueReadingMenu.ShowAsync();
         }
+
     }
 
 
