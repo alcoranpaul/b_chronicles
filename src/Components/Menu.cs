@@ -52,7 +52,11 @@ public abstract class Menu : IMenu
         {
             if (shouldClearPrev)
                 Console.Clear();
-            Print($"\n=== {menuTitle} ===\n");
+
+            string titleDecoration = new string('=', menuTitle.Length + 4);
+            Print(titleDecoration);
+            Print($"| {menuTitle} |");
+            Print(titleDecoration + "\n");
 
             // Display all menu options
             for (int i = 0; i < options.Length; i++)
@@ -88,6 +92,79 @@ public abstract class Menu : IMenu
             }
         }
     }
+
+    /// <summary>
+    /// Displays a menu with the specified title, optional subtitles, and options.
+    /// </summary>
+    /// <param name="menuTitle">The title to display at the top of the menu (wrapped in ===).</param>
+    /// <param name="shouldClearPrev">Whether to clear the console before rendering (default: true).</param>
+    /// <param name="options">Array of menu options to display.</param>
+    /// <param name="subtitles">Optional subtitles to display below the main title.</param>
+    /// <returns>A Task representing the asynchronous menu operation.</returns>
+    /// <example>
+    /// <code>
+    /// await Show("Main Menu", true, 
+    ///     new Options("Start Game", StartGame), 
+    ///     new Options("Exit", Exit),
+    ///     "Version 1.0",
+    ///     "Select an option below");
+    /// </code>
+    /// </example>
+    protected async Task Show(string menuTitle, Options[] options, bool shouldClearPrev = true, params string[] subtitles)
+    {
+        while (true)
+        {
+            if (shouldClearPrev)
+                Console.Clear();
+
+            // Render title with === decoration
+            string titleDecoration = new string('=', menuTitle.Length + 4);
+            Print(titleDecoration);
+            Print($"| {menuTitle} |");
+            Print(titleDecoration + "\n");
+
+            // Render optional subtitles
+            if (subtitles.Length > 0)
+            {
+                foreach (string subtitle in subtitles)
+                {
+                    Print($" {subtitle}");
+                }
+                Print("\n");
+            }
+
+            // Display all menu options
+            for (int i = 0; i < options.Length; i++)
+            {
+                Print($"[{i + 1}] ", ConsoleColor.Cyan, false);
+                Print(options[i].OptionText);
+            }
+
+            Console.WriteLine();
+
+            // Read user input
+            ConsoleKeyInfo key = Console.ReadKey(false);
+            Console.Clear();
+
+            int choice = key.KeyChar - '0'; // Convert key to number
+
+            if (choice >= 1 && choice <= options.Length)
+            {
+                options[choice - 1].Action?.Invoke();
+                await ShowLoadingAnimationAsync("Loading", 2);
+                Console.Clear();
+                break;
+            }
+            else
+            {
+                Print("\n❌ Invalid option.", ConsoleColor.Red);
+                Print("Try again.");
+                await ShowLoadingAnimationAsync("Returning to the menu", 2);
+            }
+        }
+    }
+
+
 
     /// <summary>
     /// Displays an animated loading spinner with a message.
