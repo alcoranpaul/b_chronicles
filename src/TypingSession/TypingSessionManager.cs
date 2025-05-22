@@ -26,9 +26,14 @@ public class TypingSessionManager : ISessionAdder
 
 
 
-    internal bool RunNext()
+    internal bool RunNext(out SessionState sessionState)
     {
-        if (_sessions.Count == 0) return true;
+        if (_sessions.Count == 0)
+        {
+            sessionState = SessionState.Error;
+            return true;
+        }
+        sessionState = SessionState.Idle;
         SessionInfo currentInfo = _sessions.Peek();
         TypingSession current = currentInfo.session;
         switch (current.CurrentState)
@@ -43,10 +48,12 @@ public class TypingSessionManager : ISessionAdder
                 break;
             case TypingSession.State.Completed:
                 _sessions.Dequeue();
+                sessionState = SessionState.Completed;
                 OnSessionCompleted?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
             case TypingSession.State.Cancelled:
                 _sessions.Dequeue();
+                sessionState = SessionState.Cancelled;
                 OnSessionCanceled?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
         }
@@ -60,7 +67,8 @@ public class TypingSessionManager : ISessionAdder
         Console.SetCursorPosition(0, 0);
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        Console.WriteLine($"[{current.book} {current.chapter}:{current.verse}]");
+        Print($"[{current.book} {current.chapter}:{current.verse}]", ConsoleColor.Cyan);
+        Print($"[F2] to exit session.");
         Console.ResetColor();
     }
 
@@ -68,6 +76,14 @@ public class TypingSessionManager : ISessionAdder
     internal void End()
     {
         OnSessionCompleted = null;
+    }
+
+    public enum SessionState
+    {
+        Completed,
+        Cancelled,
+        Idle,
+        Error
     }
     public struct SessionInfo
     {

@@ -20,6 +20,7 @@ public class ContinueMenu : Menu
             _stateManager.ChangeState(GameStateManager.State.MainMenu);
         });
 
+        Print("\n\n✔ Verse complete!");
         await Show("Would you like to continue?", shouldClearPrev: false, option1, option2);
     }
 }

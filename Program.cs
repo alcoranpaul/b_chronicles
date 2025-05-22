@@ -13,6 +13,8 @@ static class Program
     private static readonly MainMenu _mainMenu = new();
     private static readonly ProfileMenu _profileMenu = new();
     private static readonly ContinueMenu _continueReadingMenu = new();
+    private static readonly CancelledMenu _cancelledReadingMenu = new();
+
     private static readonly User _user = User.Instance;
 
     static async Task Main()
@@ -86,12 +88,25 @@ static class Program
             return;
         }
 
-        bool isInstanceSessionDone = _sessionManager.RunNext();
+        bool isInstanceSessionDone = _sessionManager.RunNext(out TypingSessionManager.SessionState sessionState);
         if (isInstanceSessionDone)
         {
-            Print("\n\n✔ Verse complete!");
-            // Has next sesison queued?
-            await _continueReadingMenu.ShowAsync();
+            switch (sessionState)
+            {
+                case TypingSessionManager.SessionState.Completed:
+
+                    await _continueReadingMenu.ShowAsync();
+                    break;
+
+                case TypingSessionManager.SessionState.Cancelled:
+                    await _cancelledReadingMenu.ShowAsync();
+                    break;
+
+                case TypingSessionManager.SessionState.Error:
+                    LogError($"An Error has occured in the Typing Session!!!");
+                    break;
+
+            }
         }
 
     }
