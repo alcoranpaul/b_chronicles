@@ -15,7 +15,7 @@ public class TypingSession
         engine.Initialize();
 
         var (display, _) = engine.GetDisplayText();
-        ConsoleRenderer.RenderTypedText(display);
+        RenderTypedText(display);
 
         ChangeState(State.InProgress);
     }
@@ -33,7 +33,7 @@ public class TypingSession
         }
         engine.HandleKeyPress(key);
         var (display, completed) = engine.GetDisplayText();
-        ConsoleRenderer.RenderTypedText(display);
+        RenderTypedText(display);
 
         if (completed)
         {
@@ -51,6 +51,19 @@ public class TypingSession
 
         CurrentState = newState;
     }
+
+    private static void RenderTypedText(List<(char ch, ConsoleColor color)> display)
+    {
+        Console.SetCursorPosition(0, 3);
+        foreach (var (ch, color) in display)
+        {
+            Console.ForegroundColor = color;
+
+            Console.Write(ch);
+        }
+        Console.ResetColor();
+    }
+
 
     public enum State
     {
