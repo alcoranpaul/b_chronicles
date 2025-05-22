@@ -85,14 +85,14 @@ public class TypingSessionManager : ISessionAdder
             session = CreateSession();
         }
 
-        private readonly TypingSession CreateSession()
+        private TypingSession CreateSession()
         {
             try
             {
-                (BookNames book, int chapter, int verse) = Player.User.Instance.RequestBibleReading();
-                Book reqBook = Book.GetBook(book);
-                string verseText = reqBook.GetVerse(chapter, verse);
+                Book b = Book.GetBook(book);
+                string verseText = b.GetVerse(chapter, verse);
                 return new TypingSession(verseText);
+
             }
             catch (Exception ex)
             {

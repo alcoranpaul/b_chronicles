@@ -64,8 +64,14 @@ public sealed class JsonProgressStorage : IBookProgressStorage
 
         try
         {
-            var json = File.ReadAllText(_filePath);
+            string? json = File.ReadAllText(_filePath);
             _cachedProgress = JsonSerializer.Deserialize<ProgressData>(json, _jsonOptions);
+            if (_cachedProgress!.LastRead != null)
+            {
+                LogDebug($"Loading next chapter and verse");
+                return (_cachedProgress!.CurrentBook, _cachedProgress.NextChapter, _cachedProgress.NextVerse);
+            }
+
             return (_cachedProgress!.CurrentBook, _cachedProgress.CurrentChapter, _cachedProgress.CurrentVerse);
         }
         catch (Exception ex)

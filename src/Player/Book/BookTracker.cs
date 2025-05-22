@@ -36,6 +36,9 @@ public sealed class BookTracker : IDisposable
         if (CurrentBook?.Name != book) return;
 
         var next = CalculateNextPassage(book, chapter, verse);
+        LogDebug($"Saving finished [{book} {chapter}:{verse}]");
+        LogDebug($"Next passage is [{next.book} {next.chapter}:{next.verse}]");
+
         _storage.SaveProgress(book, chapter, verse, next);
         CurrentBook = null;
     }
@@ -43,6 +46,7 @@ public sealed class BookTracker : IDisposable
     public (BookNames book, int chapter, int verse) GetNextReading()
     {
         (BookNames book, int chapter, int verse)? progress = _storage.LoadProgress();
+        LogDebug($"Request confirmed: Next Reading is {progress}");
         return progress ?? (BookNames.Genesis, 1, 1); // Default to Genesis 1:1
     }
 

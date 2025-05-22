@@ -12,8 +12,8 @@ public class MainMenu : Menu
 
         Options readOption = new("Read the Bible", () =>
         {
-            _sessionManager.AddSession(BookNames.Genesis, 1, 1);
-            _sessionManager.AddSession(BookNames.Genesis, 1, 2);
+            (BookNames book, int chapter, int verse) = Player.User.Instance.RequestBibleReading();
+            _sessionManager.AddSession(book, chapter, verse);
             _stateManager.ChangeState(GameStateManager.State.TypingSession);
         });
 
