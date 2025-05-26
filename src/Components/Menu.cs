@@ -53,6 +53,9 @@ public abstract class Menu : IMenu
             if (shouldClearPrev)
                 Console.Clear();
 
+            Print("");
+            Print("");
+
             string titleDecoration = new string('=', menuTitle.Length + 4);
             Print(titleDecoration);
             Print($"| {menuTitle} |");

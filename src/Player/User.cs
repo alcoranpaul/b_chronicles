@@ -18,7 +18,8 @@ public class User
         _bookTracker = new();
         _characterComponent = new();
 
-        UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
+        // NEXT: Need to save Progress of each book. Like Genesis InProgress - 10% Exodus NotStarted
+        // UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
         TypingSessionManager.OnSessionCompleted += OnVerseCompleted;
         TypingSessionManager.OnSessionStarted += OnStartReadingVerse;
 
