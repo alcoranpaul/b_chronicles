@@ -14,6 +14,8 @@ static class Program
     private static readonly ProfileMenu _profileMenu = new();
     private static readonly ContinueMenu _continueReadingMenu = new();
     private static readonly CancelledMenu _cancelledReadingMenu = new();
+    private static readonly SettingsMenu _settingsMenu = new();
+
 
     private static readonly User _user = User.Instance;
 
@@ -57,6 +59,10 @@ static class Program
 
                 case GameStateManager.State.Profile:
                     await _profileMenu.ShowAsync();
+                    break;
+
+                case GameStateManager.State.Settings:
+                    await _settingsMenu.ShowAsync();
                     break;
 
                 default:

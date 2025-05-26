@@ -22,12 +22,17 @@ public class MainMenu : Menu
            _stateManager.ChangeState(GameStateManager.State.Profile);
        });
 
+        Options settingOption = new("Settings", () =>
+    {
+        _stateManager.ChangeState(GameStateManager.State.Settings);
+    });
+
         Options exitOption = new("Exit", () =>
         {
             LogDebug("Requested to end application");
             _stateManager.ChangeState(GameStateManager.State.End);
         });
 
-        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
+        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, settingOption, exitOption);
     }
 }
