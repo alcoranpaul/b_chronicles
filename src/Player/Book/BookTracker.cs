@@ -18,7 +18,7 @@ public sealed class BookTracker : IDisposable
 
     public BookTracker()
     {
-        _storage = new JsonProgressStorage();
+        _storage = new BookJsonProgressStorage();
         _metadata = new BookMetadata();
     }
 

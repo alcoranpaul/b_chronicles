@@ -4,13 +4,13 @@ using Bible;
 
 namespace Player.BibleBook;
 
-public sealed class JsonProgressStorage : IBookProgressStorage
+public sealed class BookJsonProgressStorage : IBookProgressStorage
 {
     private readonly string _filePath;
     private ProgressData? _cachedProgress;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public JsonProgressStorage()
+    public BookJsonProgressStorage()
     {
         // Match your existing path structure
         _filePath = Path.Combine(
