@@ -70,7 +70,7 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
     }
 
     // New method to retrieve custom data
-    public T GetCustomData<T>(string key)
+    public T? GetCustomData<T>(string key)
     {
         if (_cachedProgress.Data.TryGetValue(key, out var value))
         {
