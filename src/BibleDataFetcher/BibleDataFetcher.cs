@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Bible;
 
 namespace DataFetcher;
 
@@ -18,24 +19,159 @@ public class BibleDataFetcher
 
     }
 
+    public async Task<bool> FetchBibleDataComplete()
+    {
+        bool overallSuccess = true;
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
+        httpClient.Timeout = TimeSpan.FromSeconds(60);
+
+        var fetcher = new BibleDataFetcher(httpClient);
+
+        BookNames[] allBooks = (BookNames[])Enum.GetValues(typeof(BookNames));
+        int totalBooks = allBooks.Length;
+        int completedBooks = 0;
+
+        LogDebug($"Starting download of {totalBooks} books");
+
+        using var cts = new CancellationTokenSource();
+        var spinnerTask = ShowLiveSpinnerAsync("Downloading Bible", cts.Token); // Start spinner
+
+        foreach (BookNames book in allBooks)
+        {
+            int chapter = 1;
+            bool bookComplete = false;
+            int consecutiveFailures = 0;
+            const int maxFailures = 3;
+
+            completedBooks++;
+            LogDebug($"Starting {book} (book {completedBooks}/{totalBooks})");
+
+            while (!bookComplete)
+            {
+                try
+                {
+                    RenderProgressBar(completedBooks, totalBooks, book.ToString(), chapter);
+
+                    bool success = await fetcher.FetchBibleDataAsync(book, chapter).ConfigureAwait(false);
+
+                    if (success)
+                    {
+                        RenderProgressBar(completedBooks, totalBooks, book.ToString(), chapter, success: true);
+
+                        LogDebug($"Downloading Sucess for {book} {chapter}");
+                        consecutiveFailures = 0;
+                        chapter++;
+
+                        await Task.Delay(200).ConfigureAwait(false);
+                    }
+                    else
+                    {
+
+                        consecutiveFailures++;
+                        LogDebug($"Failed {book} chapter {chapter} (attempt {consecutiveFailures}/{maxFailures})");
+
+                        if (consecutiveFailures >= maxFailures)
+                        {
+                            if (chapter > 1)
+                            {
+                                LogDebug($"Assuming end of {book} at chapter {chapter - 1}");
+                                bookComplete = true;
+                            }
+                            else
+                            {
+                                LogDebug($"Aborting {book} - no chapters downloaded");
+                                overallSuccess = false;
+                                bookComplete = true;
+                            }
+                        }
+                        else
+                        {
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+                }
+                catch (HttpRequestException httpEx)
+                {
+                    LogDebug($"HTTP error downloading {book} chapter {chapter}: {httpEx.Message}");
+                    consecutiveFailures++;
+
+                    if (consecutiveFailures >= maxFailures)
+                    {
+                        RenderProgressBar(completedBooks, totalBooks, book.ToString(), chapter, success: false, status: "HttpRequestException");
+
+                        overallSuccess = false;
+                        bookComplete = true;
+                    }
+                    else
+                    {
+                        await Task.Delay(1000).ConfigureAwait(false);
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    LogDebug($"Timeout downloading {book} chapter {chapter}");
+                    consecutiveFailures++;
+
+                    if (consecutiveFailures >= maxFailures)
+                    {
+                        RenderProgressBar(completedBooks, totalBooks, book.ToString(), chapter, success: false, status: "TaskCanceledException");
+                        overallSuccess = false;
+                        bookComplete = true;
+                    }
+                    else
+                    {
+                        await Task.Delay(1000).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    RenderProgressBar(completedBooks, totalBooks, book.ToString(), chapter, success: false, status: "Exception");
+                    LogDebug($"Unexpected error downloading {book} chapter {chapter}: {ex}");
+                    overallSuccess = false;
+                    bookComplete = true;
+                }
+            }
+
+            await Task.Delay(1000).ConfigureAwait(false); // Delay between books
+        }
+
+        cts.Cancel();  // Stop the spinner
+        await spinnerTask;  // Ensure spinner finishes
+
+        Console.WriteLine($"\nDownload {(overallSuccess ? "completed" : "partially completed")}");
+        return overallSuccess;
+    }
+
+
     public async Task<bool> FetchBibleDataAsync(Bible.BookNames book, int chapter, int? verse = null)
     {
         try
         {
 
-            string bookName = book.ToString().ToLower();
+            string bookName = book.ToString();
+            bookName = bookName switch
+            {
+                var name when name.StartsWith("First") => "1" + name.Substring(5),
+                var name when name.StartsWith("Second") => "2" + name.Substring(6),
+                var name when name.StartsWith("Third") => "3" + name.Substring(5),
+                var name when name.StartsWith("Fourth") => "4" + name.Substring(6),
+                _ => bookName
+            };
+            bookName = bookName.ToLower();
+
             // Build the API URL
             string url = verse.HasValue
                 ? $"{_baseUrl}/{bookName}/chapters/{chapter}/verses/{verse}.json"
                 : $"{_baseUrl}/{bookName}/chapters/{chapter}.json";
-            LogDebug($"Downloading JSON file from {url}");
 
             // Fetch the data
-            using var response = await _httpClient.GetAsync(url);
+            LogDebug($"Downloading JSON file from {url}");
+            using var response = await _httpClient.GetAsync(url); // suspect line
+            LogDebug($"Received response for {book} chapter {chapter}");
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"❌ Error: {response.StatusCode}");
                 return false;
             }
 
@@ -134,5 +270,36 @@ public class BibleDataFetcher
         }
         writer.WriteEndObject();
     }
+    private async Task ShowLiveSpinnerAsync(string message, CancellationToken token)
+    {
+        Console.Write(message + " ");
+        char[] spinner = ['|', '/', '-', '\\'];
+        int index = 0;
+
+        while (!token.IsCancellationRequested)
+        {
+            Console.Write(spinner[index++ % spinner.Length]);
+            await Task.Delay(100);
+            Console.Write("\b");
+        }
+
+        Console.WriteLine("✔"); // Show check mark when done
+    }
+
+    private void RenderProgressBar(int current, int total, string book, int chapter, bool? success = null, string status = "")
+    {
+        int barWidth = 20;
+        double percent = (double)current / total;
+        int filled = (int)(percent * barWidth);
+        string progressBar = "[" + new string('=', filled) + new string(' ', barWidth - filled) + "]";
+        string state = success.HasValue
+            ? (success.Value ? "✅ Success" : $"❌ {status}")
+            : "";
+
+        string message = $"{progressBar}  {current}/{total}  {book,-12} {chapter,-3}  {state}";
+        Console.Write("\r" + message.PadRight(Console.WindowWidth - 1));
+    }
+
+
 }
 

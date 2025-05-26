@@ -77,7 +77,7 @@ public abstract class Menu : IMenu
             if (choice >= 1 && choice <= options.Length)
             {
                 // Execute the selected action
-                options[choice - 1].Action?.Invoke();
+                await options[choice - 1].InvokeAsync();
 
                 await ShowLoadingAnimationAsync("Loading", 2);
                 Console.Clear();
@@ -150,7 +150,7 @@ public abstract class Menu : IMenu
 
             if (choice >= 1 && choice <= options.Length)
             {
-                options[choice - 1].Action?.Invoke();
+                await options[choice - 1].InvokeAsync();
                 await ShowLoadingAnimationAsync("Loading", 2);
                 Console.Clear();
                 break;
@@ -208,17 +208,38 @@ public abstract class Menu : IMenu
         /// <summary>
         /// Gets the action to execute when this option is selected (optional).
         /// </summary>
-        public Action? Action { get; }
+        public Action? SyncAction { get; }
+
+        public Func<Task>? AsyncAction { get; }
+
+        public async Task InvokeAsync()
+        {
+            if (AsyncAction != null)
+            {
+                await AsyncAction.Invoke();
+            }
+            else
+            {
+                SyncAction?.Invoke();
+            }
+        }
+
+        public Options(string optionText, Func<Task> asyncAction)
+        {
+            OptionText = optionText;
+            AsyncAction = asyncAction;
+            SyncAction = null;
+        }
 
         /// <summary>
         /// Initializes a new menu option.
         /// </summary>
         /// <param name="optionText">The text to display for this option.</param>
-        /// <param name="action">The action to execute when selected (optional).</param>
-        public Options(string optionText, Action? action = null)
+        /// <param name="syncAction">The action to execute when selected (optional).</param>
+        public Options(string optionText, Action? syncAction = null)
         {
             OptionText = optionText;
-            Action = action;
+            SyncAction = syncAction;
         }
     }
 }
