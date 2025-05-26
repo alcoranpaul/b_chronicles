@@ -9,6 +9,9 @@ def fetch_bible_data(book: BibleBooks, chapter: int, verse: int = None):
     Fetches Bible data for a given book, chapter, and optional verse.
     Writes the JSON data to a file in a pretty format.
 
+    Source: 
+        https://github.com/wldeh/bible-api
+
     Parameters:
         book (BibleBooks): The book of the Bible (e.g., BibleBooks.GENESIS).
         chapter (int): The chapter number.
