@@ -19,7 +19,7 @@ public class Book
         LogDebug($"Loading book: {Name}");
 
         string lower_name = Name.ToLower();
-        string book_file_dir = Path.Combine("json", $"{lower_name}");
+        string book_file_dir = Path.Combine("json", "books", $"{lower_name}");
 
         Directory.CreateDirectory(book_file_dir);
         string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");

@@ -12,7 +12,7 @@ public class FTMenu : Menu
     public override async Task ShowAsync()
     {
         // TODO: consider to make a user account.
-        Options option1 = new Options("Download Bible Raw Data", async () =>
+        Options option1 = new Options("Download Bible Raw Data (~30 mins)", async () =>
 {
     try
     {
