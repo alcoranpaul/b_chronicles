@@ -5,6 +5,7 @@ public interface IBookProgressStorage
     void BeginSession(Bible.BookNames book, int chapter, int verse);
     void SaveProgress(Bible.BookNames book, int chapter, int verse,
         (Bible.BookNames nextBook, int nextChapter, int nextVerse) next);
-    (Bible.BookNames book, int chapter, int verse)? LoadProgress();
+    ProgressData? LoadProgress();
     void Flush();
+    void UpdateBookProgress(Bible.BookNames book, BookJsonProgressStorage.BookProgressState state);
 }

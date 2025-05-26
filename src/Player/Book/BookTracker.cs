@@ -29,6 +29,7 @@ public sealed class BookTracker : IDisposable
 
         CurrentBook = new Book(book);
         _storage.BeginSession(book, chapter, verse);
+        _storage.UpdateBookProgress(book, BookJsonProgressStorage.BookProgressState.InProgress);
     }
 
     public void FinishReading(BookNames book, int chapter, int verse)
@@ -39,15 +40,27 @@ public sealed class BookTracker : IDisposable
         LogDebug($"Saving finished [{book} {chapter}:{verse}]");
         LogDebug($"Next passage is [{next.book} {next.chapter}:{next.verse}]");
 
+        if (next.book != book) _storage.UpdateBookProgress(book, BookJsonProgressStorage.BookProgressState.Completed);
+
         _storage.SaveProgress(book, chapter, verse, next);
         CurrentBook = null;
     }
 
     public (BookNames book, int chapter, int verse) GetNextReading()
     {
-        (BookNames book, int chapter, int verse)? progress = _storage.LoadProgress();
+        ProgressData? progress = _storage.LoadProgress();
         LogDebug($"Request confirmed: Next Reading is {progress}");
-        return progress ?? (BookNames.Genesis, 1, 1); // Default to Genesis 1:1
+
+        if (progress == null)
+            return (BookNames.Genesis, 1, 1);
+        else
+        {
+            ProgressData progressValue = progress.Value;
+            if (progressValue.LastRead == null)
+                return (progressValue.CurrentBook, progressValue.CurrentChapter, progressValue.CurrentVerse);
+            else
+                return (progressValue.NextBook, progressValue.NextChapter, progressValue.NextVerse);
+        }
     }
 
     private (BookNames book, int chapter, int verse) CalculateNextPassage(
