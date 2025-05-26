@@ -35,9 +35,14 @@ public class FTMenu : Menu
         LogError($"Exception during Bible download: {ex}");
     }
 });
+        Options exitOption = new("Exit", () =>
+       {
+           LogDebug("Requested to end application");
+           _stateManager.ChangeState(GameStateManager.State.End);
+       });
 
 
 
-        await Show("Welcome to Bible Chronicles!", [option1], shouldClearPrev: true, ["The program requires that these dependencies to be installed!"]);
+        await Show("Welcome to Bible Chronicles!", [option1, exitOption], shouldClearPrev: true, ["The program requires that these dependencies to be installed!"]);
     }
 }

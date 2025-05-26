@@ -20,6 +20,8 @@ public abstract class Menu : IMenu
     /// </summary>
     protected readonly ISessionAdder _sessionManager;
 
+    private static readonly Random _random = new();
+
     public Menu()
     {
         _stateManager = GameStateManager.Instance;
@@ -175,23 +177,132 @@ public abstract class Menu : IMenu
     /// <returns>A Task representing the asynchronous animation.</returns>
     private async Task ShowLoadingAnimationAsync(string message, int durationInSeconds = 3, int delay = 100)
     {
+        int choice = _random.Next(6); // Randomly pick one of 6 animations
 
-        Console.Write(message + " "); // Display the message
-        char[] spinner = ['|', '/', '-', '\\']; // Characters for the spinning bar
+        switch (choice)
+        {
+            case 0:
+                await ShowSpinningBarAsync(message, durationInSeconds, delay);
+                break;
+            case 1:
+                await ShowPacManAsync(message, durationInSeconds, delay);
+                break;
+            case 2:
+                await ShowKaomojiWaveAsync(message, durationInSeconds, delay * 2);
+                break;
+            case 3:
+                await ShowKatakanaSpinnerAsync(message, durationInSeconds, delay);
+                break;
+            case 4:
+                await ShowFacesAsync(message, durationInSeconds, delay * 2);
+                break;
+            case 5:
+                await ShowBouncingBallAsync(message, durationInSeconds, delay / 2);
+                break;
+        }
+    }
 
-        int totalIterations = durationInSeconds * 1000 / delay; // Calculate the total number of iterations
+    private async Task ShowSpinningBarAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        char[] spinner = { '|', '/', '-', '\\' };
+        int totalIterations = durationSeconds * 1000 / delayMs;
 
         for (int i = 0; i < totalIterations; i++)
         {
-            Console.Write(spinner[i % spinner.Length]); // Display the current spinner character
-            await Task.Delay(delay); // Pause asynchronously for the specified delay
-            Console.Write("\b"); // Move the cursor back to overwrite the spinner character
+            Console.Write(spinner[i % spinner.Length]);
+            await Task.Delay(delayMs);
+            Console.Write('\b');
         }
-
-        Console.WriteLine(); // Move to the next line after the animation
-
+        Console.WriteLine();
     }
 
+    private async Task ShowPacManAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        string[] frames = { "C", "◐", "◓", "◑", "◒" };
+        int totalIterations = durationSeconds * 1000 / delayMs;
+        int dotCount = 5;
+
+        for (int i = 0; i < totalIterations; i++)
+        {
+            int frame = i % frames.Length;
+            int dots = i % (dotCount + 1);
+
+            Console.Write($"{frames[frame]}{new string('.', dots)}{new string(' ', dotCount - dots)}");
+            await Task.Delay(delayMs);
+            Console.Write('\r' + message + " ");
+        }
+        Console.WriteLine();
+    }
+
+    private async Task ShowKaomojiWaveAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        string[] frames = { "(^_^)/ ", "(^_^) ", "(^_^)/ ", "(^_^) ", "(^_^)/ " };
+        int totalIterations = durationSeconds * 1000 / delayMs;
+
+        for (int i = 0; i < totalIterations; i++)
+        {
+            string frame = frames[i % frames.Length];
+            Console.Write(frame);
+            await Task.Delay(delayMs);
+            Console.Write(new string('\b', frames.Length));
+        }
+        Console.WriteLine();
+    }
+
+    private async Task ShowKatakanaSpinnerAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        char[] spinner = { 'ノ', 'ヽ', 'ヾ', 'ヿ', 'ヾ', 'ヽ' };
+        int totalIterations = durationSeconds * 1000 / delayMs;
+
+        for (int i = 0; i < totalIterations; i++)
+        {
+            Console.Write(spinner[i % spinner.Length]);
+            await Task.Delay(delayMs);
+            Console.Write(new string('\b', spinner.Length));
+
+        }
+        Console.WriteLine();
+    }
+
+    private async Task ShowFacesAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        string[] faces = { "(・_・)", "(^_^)", "(>_<)", "(^o^)", "(^_~)", "(o_O)" };
+        int totalIterations = durationSeconds * 1000 / delayMs;
+
+        for (int i = 0; i < totalIterations; i++)
+        {
+            string face = faces[i % faces.Length];
+            Console.Write(face);
+            await Task.Delay(delayMs);
+            Console.Write(new string('\b', faces.Length));
+
+        }
+        Console.WriteLine();
+    }
+
+    private async Task ShowBouncingBallAsync(string message, int durationSeconds, int delayMs)
+    {
+        Console.Write(message + " ");
+        int width = 10;
+        int totalIterations = durationSeconds * 1000 / delayMs;
+
+        for (int i = 0; i < totalIterations; i++)
+        {
+            int pos = i % (2 * width);
+            int ballPos = pos <= width ? pos : 2 * width - pos;
+            string line = new string(' ', ballPos) + "o" + new string(' ', width - ballPos);
+
+            Console.Write(line);
+            await Task.Delay(delayMs);
+            Console.Write('\r' + message + " ");
+        }
+        Console.WriteLine();
+    }
     /// <summary>
     /// Represents a single selectable menu option.
     /// </summary>
