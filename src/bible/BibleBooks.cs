@@ -1,6 +1,6 @@
 namespace Bible;
 
-public enum BibleBooks
+public enum BookNames
 {
     // Old Testament
     Genesis,

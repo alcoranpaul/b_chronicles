@@ -30,6 +30,7 @@ public class GameStateManager : IStateChange
         MainMenu,
         TypingSession,
         Profile,
+        Settings,
         End
     }
 }

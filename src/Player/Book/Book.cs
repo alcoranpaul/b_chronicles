@@ -1,14 +1,14 @@
 
 
-namespace Player;
+namespace Player.BibleBook;
 
 public class Book : IEquatable<Book>
 {
-    public Bible.BibleBooks Name { get; private set; }
+    public Bible.BookNames Name { get; private set; }
     public int ChaptersRead { get; private set; }
     public int VersesRead { get; private set; }
 
-    public Book(Bible.BibleBooks name)
+    public Book(Bible.BookNames name)
     {
         Name = name;
         ChaptersRead = 0;
@@ -17,21 +17,6 @@ public class Book : IEquatable<Book>
 
     public void IncrementChapters()
     {
-        // Get the raw book
-        // Bible.Book? rawBook = Bible.BibleManager.GetBook(Name);
-        // if (rawBook == null)
-        // {
-        //     LogError($"Cannot find Raw Data of the book of {Name}");
-        //     return;
-        // }
-        // // Figure out if the verse is at max
-        // int versesCount = rawBook.GetVerseCount(ChaptersRead);
-        // if (versesCount == VersesRead)
-        //     ChaptersRead++;
-        // else
-        // {
-        //     LogError($"Attempted to increase chapters when verse is not completed");
-        // }
         ChaptersRead++;
     }
     public void DecrementChapters() => ChaptersRead--;

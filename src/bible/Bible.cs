@@ -5,13 +5,13 @@ namespace Bible;
 public class Book
 {
     public string Name { get; private set; }
-    public BibleBooks NameAsEnum => Enum.Parse<BibleBooks>(Name);
+    public BookNames NameAsEnum => Enum.Parse<BookNames>(Name);
     private readonly List<Chapter> chapters;
 
 
 
 
-    public Book(BibleBooks bookName)
+    public Book(BookNames bookName)
     {
         Name = bookName.ToString();
         chapters = new List<Chapter>();
@@ -19,12 +19,21 @@ public class Book
         LogDebug($"Loading book: {Name}");
 
         string lower_name = Name.ToLower();
-        string book_file_path = Path.Combine("json", $"{lower_name}");
-        string[] allChapterFiles = Directory.GetFiles(book_file_path, "*.json");
+        string book_file_dir = Path.Combine("json", $"{lower_name}");
 
+        Directory.CreateDirectory(book_file_dir);
+        string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");
 
+        if (allChapterFiles == null || allChapterFiles.Length <= 0)
+        {
+            LogError($"No files in direcotyr");
+            return;
+        }
+
+        int index = 0;
         foreach (string chapterFile in allChapterFiles)
         {
+            index++;
             string json = File.ReadAllText(chapterFile);
 
             // Deserialize the JSON into the wrapper class
@@ -47,6 +56,7 @@ public class Book
 
                 Chapter chapter = new Chapter(verses);
                 chapters.Add(chapter);
+                LogDebug($"Adding Chapter {index} for book [{Name}]");
             }
             else
             {
@@ -58,16 +68,16 @@ public class Book
 
     public static List<Book> GetAllBooks()
     {
-        List<Book> books = new List<Book>();
-
-        foreach (BibleBooks item in Enum.GetValues<BibleBooks>())
-            books.Add(new(item));
-
+        LogDebug("Get All books");
+        List<Book> books = [new(BookNames.Genesis)];
+        // foreach (BookNames item in Enum.GetValues<BookNames>())
+        //     books.Add(item: new(item));
         return books;
     }
 
-    public static Book GetBook(BibleBooks bookName)
+    public static Book GetBook(BookNames bookName)
     {
+        LogDebug("Get books");
         return new Book(bookName);
     }
 
@@ -107,7 +117,12 @@ public class Book
 
     public int GetVerseCount(int chapterNumber)
     {
-        if (chapterNumber <= 0 || chapterNumber > chapters.Count) return -1;
+        chapterNumber--; // Decrement for 0-indexing
+        if (chapterNumber < 0 || chapterNumber > chapters.Count)
+        {
+            LogDebug($"Requested Verse count for the book of ({Name}). Input: {chapterNumber} -- Chapter Count: {chapters.Count}");
+            return -1;
+        }
 
         return chapters[chapterNumber].Verses.Length;
     }

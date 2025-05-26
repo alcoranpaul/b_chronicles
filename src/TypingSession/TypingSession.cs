@@ -15,7 +15,7 @@ public class TypingSession
         engine.Initialize();
 
         var (display, _) = engine.GetDisplayText();
-        ConsoleRenderer.RenderTypedText(display);
+        RenderTypedText(display);
 
         ChangeState(State.InProgress);
     }
@@ -27,16 +27,17 @@ public class TypingSession
         ConsoleKeyInfo key = Console.ReadKey(true);
         if (key.Key == ConsoleKey.F2)
         {
-            Console.WriteLine("\n[F2] Triggered Session cancelled.");
-            ChangeState(State.Cancelled);
+            LogDebug("\n[F2] Triggered Session cancelled.");
+            ChangeState(newState: State.Cancelled);
             return false;
         }
         engine.HandleKeyPress(key);
         var (display, completed) = engine.GetDisplayText();
-        ConsoleRenderer.RenderTypedText(display);
+        RenderTypedText(display);
 
         if (completed)
         {
+            LogDebug($"Session Completed");
             ChangeState(State.Completed);
             return true;
         }
@@ -50,6 +51,19 @@ public class TypingSession
 
         CurrentState = newState;
     }
+
+    private static void RenderTypedText(List<(char ch, ConsoleColor color)> display)
+    {
+        Console.SetCursorPosition(0, 3);
+        foreach (var (ch, color) in display)
+        {
+            Console.ForegroundColor = color;
+
+            Console.Write(ch);
+        }
+        Console.ResetColor();
+    }
+
 
     public enum State
     {

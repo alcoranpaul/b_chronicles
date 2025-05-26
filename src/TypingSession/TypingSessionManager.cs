@@ -6,9 +6,9 @@ public class TypingSessionManager : ISessionAdder
 {
     public static TypingSessionManager Instance { get; private set; } = new TypingSessionManager();
     private readonly Queue<SessionInfo> _sessions;
-    public static event Action<BibleBooks, int, int>? OnSessionCompleted;
-    public static event Action<BibleBooks, int, int>? OnSessionStarted;
-    public static event Action<BibleBooks, int, int>? OnSessionCanceled;
+    public static event Action<BookNames, int, int>? OnSessionCompleted;
+    public static event Action<BookNames, int, int>? OnSessionStarted;
+    public static event Action<BookNames, int, int>? OnSessionCanceled;
 
     private TypingSessionManager()
     {
@@ -16,19 +16,24 @@ public class TypingSessionManager : ISessionAdder
     }
 
     // Explicit implementation - only accessible via ISessionAdder
-    void ISessionAdder.AddSession(BibleBooks book, int chapter, int verse)
+    void ISessionAdder.AddSession(BookNames book, int chapter, int verse)
         => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
 
     // Internal method (only accessible within the assembly)
-    internal void AddSessionInternal(BibleBooks book, int chapter, int verse)
+    internal void AddSessionInternal(BookNames book, int chapter, int verse)
         => _sessions.Enqueue(new SessionInfo(book, chapter, verse));
 
 
 
-    internal bool RunNext()
+    internal bool RunNext(out SessionState sessionState)
     {
-        if (_sessions.Count == 0) return true;
+        if (_sessions.Count == 0)
+        {
+            sessionState = SessionState.Error;
+            return true;
+        }
+        sessionState = SessionState.Idle;
         SessionInfo currentInfo = _sessions.Peek();
         TypingSession current = currentInfo.session;
         switch (current.CurrentState)
@@ -43,10 +48,12 @@ public class TypingSessionManager : ISessionAdder
                 break;
             case TypingSession.State.Completed:
                 _sessions.Dequeue();
+                sessionState = SessionState.Completed;
                 OnSessionCompleted?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
             case TypingSession.State.Cancelled:
                 _sessions.Dequeue();
+                sessionState = SessionState.Cancelled;
                 OnSessionCanceled?.Invoke(currentInfo.book, currentInfo.chapter, currentInfo.verse);
                 return true;
         }
@@ -60,7 +67,8 @@ public class TypingSessionManager : ISessionAdder
         Console.SetCursorPosition(0, 0);
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        Console.WriteLine($"[{current.book} {current.chapter}:{current.verse}]");
+        Print($"[{current.book} {current.chapter}:{current.verse}]", ConsoleColor.Cyan);
+        Print($"[F2] to exit session.");
         Console.ResetColor();
     }
 
@@ -69,15 +77,23 @@ public class TypingSessionManager : ISessionAdder
     {
         OnSessionCompleted = null;
     }
+
+    public enum SessionState
+    {
+        Completed,
+        Cancelled,
+        Idle,
+        Error
+    }
     public struct SessionInfo
     {
-        public BibleBooks book;
+        public BookNames book;
         public int chapter;
         public int verse;
         public TypingSession session;
 
 
-        public SessionInfo(BibleBooks book, int chapter, int verse)
+        public SessionInfo(BookNames book, int chapter, int verse)
         {
             this.book = book;
             this.chapter = chapter;
@@ -85,13 +101,15 @@ public class TypingSessionManager : ISessionAdder
             session = CreateSession();
         }
 
-        private readonly TypingSession CreateSession()
+        private TypingSession CreateSession()
         {
             try
             {
-                Book b = Player.User.Instance.RequestBibleReading();
+                LogDebug($"Creating new Typing Session Info!");
+                Book b = Book.GetBook(book);
                 string verseText = b.GetVerse(chapter, verse);
                 return new TypingSession(verseText);
+
             }
             catch (Exception ex)
             {

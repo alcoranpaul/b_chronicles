@@ -35,5 +35,5 @@ venv/
 logs/
 
 # Ignore all files in the player directory
-json/player/
-json/player/books.json
+json/
+!json/unlocks/

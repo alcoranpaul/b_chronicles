@@ -12,9 +12,9 @@ public class MainMenu : Menu
 
         Options readOption = new("Read the Bible", () =>
         {
-            _sessionManager.AddSession(BibleBooks.Genesis, 1, 1);
-            _sessionManager.AddSession(BibleBooks.Genesis, 1, 2);
-            _stateManager.ChangeState(GameStateManager.State.TypingSession);
+            (BookNames book, int chapter, int verse) = Player.User.Instance.RequestBibleReading();
+            _sessionManager.AddSession(book, chapter, verse);
+            _stateManager.ChangeState(newState: GameStateManager.State.TypingSession);
         });
 
         Options playerInfoOption = new("Profile", () =>
@@ -22,12 +22,17 @@ public class MainMenu : Menu
            _stateManager.ChangeState(GameStateManager.State.Profile);
        });
 
+        Options settingOption = new("Settings", () =>
+    {
+        _stateManager.ChangeState(GameStateManager.State.Settings);
+    });
+
         Options exitOption = new("Exit", () =>
         {
             LogDebug("Requested to end application");
             _stateManager.ChangeState(GameStateManager.State.End);
         });
 
-        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, exitOption);
+        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, settingOption, exitOption);
     }
 }

@@ -1,46 +1,41 @@
 
 using main;
+using Player.BibleBook;
 
 namespace Player;
 
 public class User
 {
     public static User Instance { get; private set; } = new User();
-    private readonly BookComponent bookComponent;
-    public List<Book> Books => bookComponent.Objects;
-    private readonly CharacterComponent characterComponent;
-    public List<Character> Characters => characterComponent.Objects;
+    private readonly BookTracker _bookTracker;
 
-    public bool HasBooks => bookComponent.IsDefined;
+    private readonly CharacterComponent _characterComponent;
+    public List<Character> Characters => _characterComponent.Objects;
+
 
     private User()
     {
-        bookComponent = new();
-        characterComponent = new();
+        _bookTracker = new();
+        _characterComponent = new();
 
-        if (!HasBooks)
-        {
-            LogDebug($"User has no books! Adding the book of Genesis");
-            AddBibleBook(Bible.BibleBooks.Genesis);
-        }
-
-        UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
+        // NEXT: Need to save Progress of each book. Like Genesis InProgress - 10% Exodus NotStarted
+        // UnlockManager.Instance.OnUnlockedEvent += OnUnlockedEvent;
         TypingSessionManager.OnSessionCompleted += OnVerseCompleted;
         TypingSessionManager.OnSessionStarted += OnStartReadingVerse;
 
     }
 
-    private void OnStartReadingVerse(Bible.BibleBooks bookName, int chapter, int verse)
+    private void OnStartReadingVerse(Bible.BookNames bookName, int chapter, int verse)
     {
-        bookComponent.StartNewReading(bookName, chapter, verse);
+        _bookTracker.StartReading(bookName, chapter, verse);
     }
 
-    private void OnVerseCompleted(Bible.BibleBooks bookName, int chapter, int verse)
+    private void OnVerseCompleted(Bible.BookNames bookName, int chapter, int verse)
     {
-        bookComponent.FinishReading(bookName, chapter, verse);
+        _bookTracker.FinishReading(bookName, chapter, verse);
     }
 
-    private void OnUnlockedEvent(Bible.BibleBooks books, int chapter, int verse, UnlockManager.UnlockEntry entry)
+    private void OnUnlockedEvent(Bible.BookNames books, int chapter, int verse, UnlockManager.UnlockEntry entry)
     {
         if (entry == null || entry.Unlocks == null || entry.Unlocks.Count <= 0) return;
 
@@ -61,11 +56,6 @@ public class User
         }
     }
 
-    public void AddBibleBook(Bible.BibleBooks book)
-    {
-        bookComponent.AddObject(new Book(book));
-    }
-
     private void UnlockNewCharacter(BookInfo info, string name, List<string> traits)
     {
         if (!info.IsValid() || string.IsNullOrEmpty(name) || traits == null || traits.Count <= 0) return;
@@ -73,13 +63,13 @@ public class User
         LogDebug($"Unlocked a new Character of name [{name}]!");
         // If not, add character
         Character newCharacter = new(name, traits);
-        characterComponent.AddObject(newCharacter);
+        _characterComponent.AddObject(newCharacter);
     }
 
     private void AddCharacterTrait(BookInfo info, string name, string value)
     {
         if (!info.IsValid() || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(value)) return;
-        Character? existingCharacter = characterComponent.Objects.Find((item) => item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+        Character? existingCharacter = _characterComponent.Objects.Find((item) => item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
         if (existingCharacter == null) return;
 
@@ -91,20 +81,20 @@ public class User
 
     public void End()
     {
-        bookComponent.End();
-        characterComponent.End();
+        _bookTracker.Dispose();
+        _characterComponent.End();
         UnlockManager.Instance.OnUnlockedEvent -= OnUnlockedEvent;
     }
 
-    public Bible.Book RequestBibleReading() => bookComponent.RequestBibleReading();
+    public (Bible.BookNames book, int chapter, int verse) RequestBibleReading() => _bookTracker.GetNextReading();
 
     private struct BookInfo
     {
-        public Bible.BibleBooks Book { get; private set; }
+        public Bible.BookNames Book { get; private set; }
         public int Chapter { get; private set; }
         public int Verse { get; private set; }
 
-        public BookInfo(Bible.BibleBooks book, int chapter, int verse)
+        public BookInfo(Bible.BookNames book, int chapter, int verse)
         {
             Book = book;
             Chapter = chapter;
