@@ -7,49 +7,88 @@ namespace Player.BibleBook;
 public sealed class BookJsonProgressStorage : IBookProgressStorage
 {
     private readonly string _filePath;
-    private ProgressData? _cachedProgress;
+    private ProgressData _cachedProgress;
     private readonly JsonSerializerOptions _jsonOptions;
 
     public BookJsonProgressStorage()
     {
-        // Match your existing path structure
         _filePath = Path.Combine(
             Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
-            "json", "player", "bible_progress.json"
+            "json", "player", "bible_progress.json"  // Renamed to be more generic
         );
 
         _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() } // Enum-as-strings like your original
+            Converters = { new JsonStringEnumConverter() }
         };
+
+        _cachedProgress = new ProgressData();
     }
 
-    public void BeginSession(Bible.BookNames book, int chapter, int verse)
+    public void BeginSession(BookNames book, int chapter, int verse)
     {
-        _cachedProgress = new ProgressData(
-            book, chapter, verse,
-            NextBook: book, NextChapter: chapter, NextVerse: verse + 1
-        );
+        _cachedProgress = new ProgressData
+        {
+            CurrentBook = book,
+            CurrentChapter = chapter,
+            CurrentVerse = verse,
+            NextBook = book,
+            NextChapter = chapter,
+            NextVerse = verse + 1
+        };
+
+        // Example of storing additional data
+        _cachedProgress.Data["LastSessionStart"] = DateTime.UtcNow;
+        _cachedProgress.Data["SessionCount"] = GetSessionCount() + 1;
+
         SaveToFile();
     }
 
-    public void SaveProgress(Bible.BookNames book, int chapter, int verse,
-        (Bible.BookNames nextBook, int nextChapter, int nextVerse) next)
+    public void SaveProgress(BookNames book, int chapter, int verse,
+        (BookNames nextBook, int nextChapter, int nextVerse) next)
     {
-        _cachedProgress = new ProgressData(
-            book, chapter, verse,
-            next.nextBook, next.nextChapter, next.nextVerse,
-            LastRead: DateTime.UtcNow
-        );
+        _cachedProgress = new ProgressData
+        {
+            CurrentBook = book,
+            CurrentChapter = chapter,
+            CurrentVerse = verse,
+            NextBook = next.nextBook,
+            NextChapter = next.nextChapter,
+            NextVerse = next.nextVerse,
+            LastRead = DateTime.UtcNow
+        };
+
         SaveToFile();
+    }
+
+    // New method to store custom data
+    public void StoreCustomData(string key, object value)
+    {
+        _cachedProgress.Data[key] = value;
+        SaveToFile();
+    }
+
+    // New method to retrieve custom data
+    public T GetCustomData<T>(string key)
+    {
+        if (_cachedProgress.Data.TryGetValue(key, out var value))
+        {
+            return (T)value;
+        }
+        return default;
+    }
+
+    private int GetSessionCount()
+    {
+        return _cachedProgress.Data.TryGetValue("SessionCount", out var count)
+            ? (int)count : 0;
     }
 
     private void SaveToFile()
     {
         try
         {
-            LogDebug($"Saving Bible progress to [{Path.GetFullPath(_filePath)}]");
             Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
             File.WriteAllText(_filePath, JsonSerializer.Serialize(_cachedProgress, _jsonOptions));
         }
@@ -59,25 +98,19 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
         }
     }
 
-    public (Bible.BookNames book, int chapter, int verse)? LoadProgress()
+    public (BookNames book, int chapter, int verse)? LoadProgress()
     {
         if (!File.Exists(_filePath)) return null;
 
         try
         {
-            string? json = File.ReadAllText(_filePath);
-            _cachedProgress = JsonSerializer.Deserialize<ProgressData>(json, _jsonOptions);
-            if (_cachedProgress == null)
-            {
-                return (BookNames.Genesis, 1, 1);
-            }
-            if (_cachedProgress!.LastRead != null)
-            {
-                LogDebug($"Loading next chapter and verse");
-                return (_cachedProgress!.NextBook, _cachedProgress.NextChapter, _cachedProgress.NextVerse);
-            }
+            string json = File.ReadAllText(_filePath);
+            _cachedProgress = JsonSerializer.Deserialize<ProgressData>(json, _jsonOptions)
+                ?? new ProgressData();
 
-            return (_cachedProgress!.CurrentBook, _cachedProgress.CurrentChapter, _cachedProgress.CurrentVerse);
+            return (_cachedProgress.CurrentBook,
+                   _cachedProgress.CurrentChapter,
+                   _cachedProgress.CurrentVerse);
         }
         catch (Exception ex)
         {
@@ -88,13 +121,75 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
 
     public void Flush() => SaveToFile();
 
-    private record ProgressData(
-        Bible.BookNames CurrentBook,
-        int CurrentChapter,
-        int CurrentVerse,
-        Bible.BookNames NextBook,
-        int NextChapter,
-        int NextVerse,
-        DateTime? LastRead = null
-    );
+
+
+    private record ProgressData
+    {
+        // Core dictionary storage
+        [JsonInclude]
+        public Dictionary<string, object> Data { get; init; } = new();
+
+        [JsonIgnore]
+        public BookNames CurrentBook
+        {
+            get => Data.TryGetValue("CurrentBook", out var value)
+                   ? (BookNames)value : BookNames.Genesis;
+            init => Data["CurrentBook"] = value;
+        }
+        [JsonIgnore]
+        public int CurrentChapter
+        {
+            get => Data.TryGetValue("CurrentChapter", out var value)
+                   ? (int)value : 1;
+            init => Data["CurrentChapter"] = value;
+        }
+        [JsonIgnore]
+        public int CurrentVerse
+        {
+            get => Data.TryGetValue("CurrentVerse", out var value)
+                   ? (int)value : 1;
+            init => Data["CurrentVerse"] = value;
+        }
+        [JsonIgnore]
+        public BookNames NextBook
+        {
+            get => Data.TryGetValue("NextBook", out var value)
+                   ? (BookNames)value : CurrentBook;
+            init => Data["NextBook"] = value;
+        }
+        [JsonIgnore]
+        public int NextChapter
+        {
+            get => Data.TryGetValue("NextChapter", out var value)
+                   ? (int)value : CurrentChapter;
+            init => Data["NextChapter"] = value;
+        }
+        [JsonIgnore]
+        public int NextVerse
+        {
+            get => Data.TryGetValue("NextVerse", out var value)
+                   ? (int)value : CurrentVerse + 1;
+            init => Data["NextVerse"] = value;
+        }
+        [JsonIgnore]
+        public DateTime? LastRead
+        {
+            get => Data.TryGetValue("LastRead", out var value)
+                   ? (DateTime?)value : null;
+            init
+            {
+                if (value.HasValue)
+                    Data["LastRead"] = value.Value;
+            }
+        }
+
+        // Constructor for easy initialization
+        public ProgressData()
+        {
+            // Initialize default values
+            CurrentBook = BookNames.Genesis;
+            CurrentChapter = 1;
+            CurrentVerse = 1;
+        }
+    }
 }
