@@ -22,8 +22,8 @@ public sealed class BookMetadata
     /// </remarks>
     public BookMetadata()
     {
+        LogDebug($"Loading books");
         _books = Bible.Book.GetAllBooks().ToDictionary(book => book.NameAsEnum);
-        LogDebug($"{_books}");
         // Initialize chapter counts
         _chapterCounts = new();
         foreach (var book in _books.Values)

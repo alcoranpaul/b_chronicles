@@ -105,6 +105,7 @@ public class TypingSessionManager : ISessionAdder
         {
             try
             {
+                LogDebug($"Creating new Typing Session Info!");
                 Book b = Book.GetBook(book);
                 string verseText = b.GetVerse(chapter, verse);
                 return new TypingSession(verseText);

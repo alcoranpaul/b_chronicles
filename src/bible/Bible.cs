@@ -19,8 +19,16 @@ public class Book
         LogDebug($"Loading book: {Name}");
 
         string lower_name = Name.ToLower();
-        string book_file_path = Path.Combine("json", $"{lower_name}");
-        string[] allChapterFiles = Directory.GetFiles(book_file_path, "*.json");
+        string book_file_dir = Path.Combine("json", $"{lower_name}");
+
+        Directory.CreateDirectory(book_file_dir);
+        string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");
+
+        if (allChapterFiles == null || allChapterFiles.Length <= 0)
+        {
+            LogError($"No files in direcotyr");
+            return;
+        }
 
         int index = 0;
         foreach (string chapterFile in allChapterFiles)
@@ -60,15 +68,16 @@ public class Book
 
     public static List<Book> GetAllBooks()
     {
+        LogDebug("Get All books");
         List<Book> books = [new(BookNames.Genesis)];
         // foreach (BookNames item in Enum.GetValues<BookNames>())
         //     books.Add(item: new(item));
-
         return books;
     }
 
     public static Book GetBook(BookNames bookName)
     {
+        LogDebug("Get books");
         return new Book(bookName);
     }
 

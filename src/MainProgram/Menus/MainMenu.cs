@@ -14,7 +14,7 @@ public class MainMenu : Menu
         {
             (BookNames book, int chapter, int verse) = Player.User.Instance.RequestBibleReading();
             _sessionManager.AddSession(book, chapter, verse);
-            _stateManager.ChangeState(GameStateManager.State.TypingSession);
+            _stateManager.ChangeState(newState: GameStateManager.State.TypingSession);
         });
 
         Options playerInfoOption = new("Profile", () =>
