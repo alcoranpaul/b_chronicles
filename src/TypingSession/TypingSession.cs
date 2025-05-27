@@ -37,6 +37,8 @@ public class TypingSession
 
         if (completed)
         {
+            Print("");
+            Print("");
             LogDebug($"Session Completed");
             ChangeState(State.Completed);
             return true;
