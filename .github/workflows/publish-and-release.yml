@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "master" ]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-publish:
     runs-on: windows-latest
@@ -61,5 +64,6 @@ jobs:
         body: |
           Automated release for ${{ github.sha }}
           Changelog: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}
+        
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
