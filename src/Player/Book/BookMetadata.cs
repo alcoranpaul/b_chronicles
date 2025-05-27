@@ -28,6 +28,7 @@ public sealed class BookMetadata
         _chapterCounts = new();
         foreach (var book in _books.Values)
         {
+            LogDebug($"Adding to meta: {book}");
             _chapterCounts[book.NameAsEnum] = book.GetChaptersCount();
         }
 

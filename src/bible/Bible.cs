@@ -6,7 +6,7 @@ public class Book
 {
     public string Name { get; private set; }
     public BookNames NameAsEnum => Enum.Parse<BookNames>(Name);
-    private readonly List<Chapter> chapters;
+    private readonly Chapter[] chapters;
 
 
 
@@ -14,15 +14,12 @@ public class Book
     public Book(BookNames bookName)
     {
         Name = bookName.ToString();
-        chapters = new List<Chapter>();
 
-        LogDebug($"Loading book: {Name}");
+        string convertedBookName = ConvertNameToLower();
+        string[] allChapterFiles = ExtractJsonFiles(convertedBookName);
+        chapters = new Chapter[allChapterFiles.Length];
 
-        string lower_name = Name.ToLower();
-        string book_file_dir = Path.Combine("json", "books", $"{lower_name}");
-
-        Directory.CreateDirectory(book_file_dir);
-        string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");
+        LogDebug($"Loading book: {Name} -- Chapters: {chapters.Length}");
 
         if (allChapterFiles == null || allChapterFiles.Length <= 0)
         {
@@ -30,10 +27,19 @@ public class Book
             return;
         }
 
-        int index = 0;
-        foreach (string chapterFile in allChapterFiles)
+        ExtractData(allChapterFiles);
+
+
+    }
+
+    private void ExtractData(string[] allChapterFiles)
+    {
+        RawBook[] rawBooks = new RawBook[allChapterFiles.Length];
+
+        // Convert to Raw Book
+        for (int i = 0; i < allChapterFiles.Length; i++)
         {
-            index++;
+            string chapterFile = allChapterFiles[i];
             string json = File.ReadAllText(chapterFile);
 
             // Deserialize the JSON into the wrapper class
@@ -43,41 +49,70 @@ public class Book
             };
 
             RawBook? wrapper = JsonSerializer.Deserialize<RawBook>(json, options);
-
             if (wrapper != null && wrapper.Data != null)
-            {
-                Verse[] verses = new Verse[wrapper.Data.Count];
-                for (int i = 0; i < wrapper.Data.Count; i++)
-                {
-                    RawData rawChapter = wrapper.Data[i];
-                    Verse verse = new Verse(rawChapter.Text);
-                    verses[i] = verse;
-                }
-
-                Chapter chapter = new Chapter(verses);
-                chapters.Add(chapter);
-                LogDebug($"Adding Chapter {index} for book [{Name}]");
-            }
+                rawBooks[i] = wrapper;
             else
+                LogError($"Failed to deserialize JSON for book: {Name}"); ;
+
+        }
+
+        // Conver to Verses and adding into Chapters of this book
+        foreach (RawBook chapterFile in rawBooks)
+        {
+            Verse[] verses = new Verse[chapterFile.Data.Count];
+            for (int i = 0; i < chapterFile.Data.Count; i++)
             {
-                LogError($"Failed to deserialize JSON for book: {Name}");
+                RawData rawChapter = chapterFile.Data[i];
+                Verse verse = new(rawChapter.Text);
+
+                verses[i] = verse;
             }
+
+            int chapterNumber = chapterFile.GetChapter() - 1;
+
+            Chapter chapter = new(verses);
+            chapters[chapterNumber] = chapter;
+
         }
     }
 
+    private static string[] ExtractJsonFiles(string convertedBookName)
+    {
+        string book_file_dir = Path.Combine("json", "books", $"{convertedBookName}");
+
+        Directory.CreateDirectory(path: book_file_dir);
+        string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");
+        return allChapterFiles;
+    }
+
+    private string ConvertNameToLower()
+    {
+        string convertedBookName = Name switch
+        {
+            var name when name.StartsWith("First") => "1" + name.Substring(5),
+            var name when name.StartsWith("Second") => "2" + name.Substring(6),
+            var name when name.StartsWith("Third") => "3" + name.Substring(5),
+            var name when name.StartsWith("Fourth") => "4" + name.Substring(6),
+            "SongOfSolomon" => "songofsongs",
+            _ => Name
+        };
+        convertedBookName = convertedBookName.ToLower();
+        return convertedBookName;
+    }
 
     public static List<Book> GetAllBooks()
     {
         LogDebug("Get All books");
-        List<Book> books = [new(BookNames.Genesis)];
-        // foreach (BookNames item in Enum.GetValues<BookNames>())
-        //     books.Add(item: new(item));
+        List<Book> books = new();
+        foreach (BookNames item in Enum.GetValues<BookNames>())
+        {
+            books.Add(item: new(item));
+        }
         return books;
     }
 
     public static Book GetBook(BookNames bookName)
     {
-        LogDebug("Get books");
         return new Book(bookName);
     }
 
@@ -91,14 +126,14 @@ public class Book
     {
         try
         {
-            if (chapter < 1 || chapter > chapters.Count)
+            if (chapter < 1 || chapter > chapters.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(chapter), "Chapter number is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(chapter), $"Chapter number is out of range ({chapters.Length}).");
             }
 
             if (verse < 1 || verse > chapters[chapter - 1].Verses.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(verse), "Verse number is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(verse), $"Verse number is out of range ({chapters[chapter - 1].Verses.Length}).");
             }
         }
         catch (ArgumentOutOfRangeException ex)
@@ -112,15 +147,15 @@ public class Book
 
     public int GetChaptersCount()
     {
-        return chapters.Count;
+        return chapters.Length;
     }
 
     public int GetVerseCount(int chapterNumber)
     {
         chapterNumber--; // Decrement for 0-indexing
-        if (chapterNumber < 0 || chapterNumber > chapters.Count)
+        if (chapterNumber < 0 || chapterNumber > chapters.Length)
         {
-            LogDebug($"Requested Verse count for the book of ({Name}). Input: {chapterNumber} -- Chapter Count: {chapters.Count}");
+            LogDebug($"Requested Verse count for the book of ({Name}). Input: {chapterNumber} -- Chapter Count: {chapters.Length}");
             return -1;
         }
 
@@ -129,10 +164,9 @@ public class Book
 
     public override string ToString()
     {
-        return $"{Name} - {chapters.Count} chapters";
+        return $"{Name} - {chapters.Length} chapters";
     }
 
-    // Override Equals and GetHashCode to compare by Name
     public override bool Equals(object? obj)
     {
         return obj is Book other && Name == other.Name;
@@ -166,6 +200,11 @@ public class Book
         {
             Text = text;
         }
+
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 
     public class RawData
@@ -174,10 +213,53 @@ public class Book
         public required string Chapter { get; set; }
         public required string Verse { get; set; }
         public required string Text { get; set; }
+
+        public override string ToString()
+        {
+            return $"({Book} {Chapter}:{Verse})";
+        }
+
     }
 
     public class RawBook
     {
         public required List<RawData> Data { get; set; }
+
+        public int GetChapter()
+        {
+            try
+            {
+                return int.Parse(Data[0].Chapter);
+            }
+            catch (ArgumentNullException e)
+            {
+                LogError($"{e}");
+                return -1;
+            }
+            catch (FormatException e)
+            {
+                LogError($"{e}");
+                return -1;
+            }
+            catch (OverflowException e)
+            {
+                LogError($"{e}");
+                return -1;
+            }
+
+        }
+
+        public override string ToString()
+        {
+            string msg = "";
+
+            foreach (var item in Data)
+            {
+                msg += $"{item} ";
+            }
+            return msg;
+        }
+
+
     }
 }
