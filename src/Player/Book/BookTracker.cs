@@ -40,7 +40,11 @@ public sealed class BookTracker : IDisposable
         LogDebug($"Saving finished [{book} {chapter}:{verse}]");
         LogDebug($"Next passage is [{next.book} {next.chapter}:{next.verse}]");
 
-        if (next.book != book) _storage.UpdateBookProgress(book, BookJsonProgressStorage.BookProgressState.Completed);
+        if (next.book != book)
+        {
+            LogDebug($"Moving on to the book of {next.book} <= {book}");
+            _storage.UpdateBookProgress(book, BookJsonProgressStorage.BookProgressState.Completed);
+        }
 
         _storage.SaveProgress(book, chapter, verse, next);
         CurrentBook = null;
@@ -52,7 +56,7 @@ public sealed class BookTracker : IDisposable
         LogDebug($"Request confirmed: Next Reading is {progress}");
 
         if (progress == null)
-            return (BookNames.Genesis, 1, 1);
+            return (BookNames.Exodus, 40, 38);
         else
         {
             ProgressData progressValue = progress.Value;

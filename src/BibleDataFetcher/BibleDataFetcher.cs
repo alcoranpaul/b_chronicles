@@ -144,7 +144,7 @@ public class BibleDataFetcher
     }
 
 
-    public async Task<bool> FetchBibleDataAsync(Bible.BookNames book, int chapter, int? verse = null)
+    public async Task<bool> FetchBibleDataAsync(BookNames book, int chapter, int? verse = null)
     {
         try
         {
@@ -156,6 +156,7 @@ public class BibleDataFetcher
                 var name when name.StartsWith("Second") => "2" + name.Substring(6),
                 var name when name.StartsWith("Third") => "3" + name.Substring(5),
                 var name when name.StartsWith("Fourth") => "4" + name.Substring(6),
+                "SongOfSolomon" => "songofsongs",
                 _ => bookName
             };
             bookName = bookName.ToLower();

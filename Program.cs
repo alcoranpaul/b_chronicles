@@ -40,6 +40,8 @@ static class Program
 
         }
 
+
+
     }
 
     private static void ConfigureLogging()
