@@ -56,7 +56,7 @@ public sealed class BookTracker : IDisposable
         LogDebug($"Request confirmed: Next Reading is {progress}");
 
         if (progress == null)
-            return (BookNames.Exodus, 40, 38);
+            return (BookNames.Genesis, 1, 1);
         else
         {
             ProgressData progressValue = progress.Value;

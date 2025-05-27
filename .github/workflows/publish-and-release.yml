@@ -1,0 +1,63 @@
+name: Publish and Release
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Extract Project Version
+      id: get_version
+      run: |
+        # Extract version from .csproj (e.g., "1.2.3")
+        $version = (Select-String -Path '*.csproj' -Pattern '<Version>(.*?)<\/Version>').Matches.Groups[1].Value
+        echo "Extracted version: $version"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
+    - name: Publish App
+      run: |
+        dotnet publish -c Release -r win-x64 \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          -p:IncludeAllContentForSelfExtract=true \
+          -p:DebugType=None
+
+    - name: Generate version.xml
+      run: |
+        @"
+        <?xml version="1.0"?>
+        <item>
+          <version>${{ steps.get_version.outputs.version }}</version>
+          <url>https://github.com/${{ github.repository }}/releases/latest/download/b_chronicles-win-x64.zip</url>
+          <changelog>https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}</changelog>
+        </item>
+        "@ | Out-File -FilePath version.xml -Encoding utf8
+
+    - name: Zip Artifacts
+      run: |
+        $publishDir = "bin/Release/net8.0/win-x64/publish"
+        Compress-Archive -Path "$publishDir/*" -DestinationPath "b_chronicles-win-x64.zip" -Force
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          b_chronicles-win-x64.zip
+          version.xml
+        tag_name: v${{ steps.get_version.outputs.version }} # Uses version from .csproj
+        name: Release v${{ steps.get_version.outputs.version }}
+        body: |
+          Automated release for ${{ github.sha }}
+          Changelog: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

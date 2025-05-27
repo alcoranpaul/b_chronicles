@@ -46,7 +46,7 @@ static class Program
 
     private static void ConfigureLogging()
     {
-        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Production");
         LoggingConfig.ConfigureLogging(true, false);
     }
 

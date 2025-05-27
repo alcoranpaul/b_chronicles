@@ -17,10 +17,10 @@ public class MainMenu : Menu
             _stateManager.ChangeState(newState: GameStateManager.State.TypingSession);
         });
 
-        Options playerInfoOption = new("Profile", () =>
-       {
-           _stateManager.ChangeState(GameStateManager.State.Profile);
-       });
+        //     Options playerInfoOption = new("Profile", () =>
+        //    {
+        //        _stateManager.ChangeState(GameStateManager.State.Profile);
+        //    });
 
         Options settingOption = new("Settings", () =>
     {
@@ -33,6 +33,6 @@ public class MainMenu : Menu
             _stateManager.ChangeState(GameStateManager.State.End);
         });
 
-        await Show("Bible Typing App", shouldClearPrev: true, readOption, playerInfoOption, settingOption, exitOption);
+        await Show("Bible Typing App", shouldClearPrev: true, readOption, settingOption, exitOption);
     }
 }

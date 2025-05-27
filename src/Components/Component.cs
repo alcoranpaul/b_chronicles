@@ -19,9 +19,8 @@ public abstract class Component<T>
     {
         this.object_name = object_name;
         t_objects = new();
-        path_to_object = Path.Combine(
-    Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
-    "json", "player", $"{object_name.ToLower()}.json");
+        path_to_object = Path.Combine("json", "player", $"{object_name.ToLower()}.json");
+
         Load();
     }
 
