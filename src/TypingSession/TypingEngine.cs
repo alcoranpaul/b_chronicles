@@ -40,24 +40,51 @@ public class TypingEngine
     public (List<(char, ConsoleColor)>, bool) GetDisplayText()
     {
         List<(char, ConsoleColor)> result = new();
+        bool allCorrect = true;
 
         for (int i = 0; i < OriginalText.Length; i++)
         {
+            char originalChar = OriginalText[i];
+            char displayChar = originalChar; // Default: show original character (space stays invisible)
+
             if (i < UserInput.Length)
             {
-                // Compare against normalized text but show original characters
                 bool isCorrect = UserInput[i] == NormalizedText[i];
-                result.Add((OriginalText[i], isCorrect ? ConsoleColor.Green : ConsoleColor.Red));
+
+                // Handle space errors (ONLY show ␣ when user makes a mistake)
+                if (originalChar == ' ' || UserInput[i] == ' ')
+                {
+                    if (originalChar != ' ' && UserInput[i] == ' ')
+                    {
+                        // Case 1: User typed an extra space (red ␣)
+                        result.Add(('␣', ConsoleColor.Red));
+                        allCorrect = false;
+                        continue;
+                    }
+                    else if (originalChar == ' ' && UserInput[i] != ' ')
+                    {
+                        // Case 2: User missed a space (red ␣ at original position)
+                        result.Add(('␣', ConsoleColor.Red));
+                        allCorrect = false;
+                        continue;
+                    }
+                    // Case 3: Correct space → leave as invisible (no ␣)
+                }
+
+                // Non-space or correct space
+                result.Add((displayChar, isCorrect ? ConsoleColor.Green : ConsoleColor.Red));
+                if (!isCorrect) allCorrect = false;
             }
             else
             {
-                result.Add((OriginalText[i], ConsoleColor.DarkGray));
+                // Untyped characters (never show ␣ here, even for untyped spaces)
+                result.Add((displayChar, ConsoleColor.DarkGray));
+                if (originalChar == ' ') allCorrect = false; // Still track correctness
             }
         }
 
-        return (result, UserInput == NormalizedText);
+        return (result, allCorrect && UserInput.Length == NormalizedText.Length);
     }
-
     private string NormalizeQuotes(string text)
     {
         return text
