@@ -39,10 +39,14 @@ public class AutoUpdater
                     await DownloadAndUpdateAsync(release);
                 }
             }
+            else
+            {
+                Print($"Application is currently updated! ༼ つ ◕_◕ ༽つ\n");
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Update check failed: {ex.Message}");
+            Print($"Update check failed: {ex.Message}");
         }
     }
 
