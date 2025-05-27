@@ -27,43 +27,70 @@ jobs:
         echo "Extracted version: $version"
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
-    - name: Publish App
+    - name: Publish App for All Platforms
       shell: bash
       run: |
-        dotnet publish -c Release -r win-x64 \
-          --self-contained true \
-          -p:PublishSingleFile=true \
-          -p:IncludeAllContentForSelfExtract=true \
-          -p:DebugType=None
+        for RID in win-x64 linux-x64 osx-x64 osx-arm64; do
+          dotnet publish -c Release -r $RID \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeAllContentForSelfExtract=true \
+            -p:DebugType=None
+        done
+
 
 
     - name: Generate version.xml
       run: |
+        $version = "${{ steps.get_version.outputs.version }}"
+        $repo = "${{ github.repository }}"
+
         @"
-        <?xml version="1.0"?>
+        <?xml version="1.0" encoding="utf-8"?>
         <item>
-          <version>${{ steps.get_version.outputs.version }}</version>
-          <url>https://github.com/${{ github.repository }}/releases/latest/download/b_chronicles-win-x64.zip</url>
-          <changelog>https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}</changelog>
+          <version>$version</version>
+          <changelog>https://github.com/$repo/releases/tag/v$version</changelog>
+          <platforms>
+            <platform os="windows" arch="x64">
+              <url>https://github.com/$repo/releases/latest/download/b_chronicles-win-x64.zip</url>
+            </platform>
+            <platform os="linux" arch="x64">
+              <url>https://github.com/$repo/releases/latest/download/b_chronicles-linux-x64.zip</url>
+            </platform>
+            <platform os="osx" arch="x64">
+              <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-x64.zip</url>
+            </platform>
+            <platform os="osx" arch="arm64">
+              <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-arm64.zip</url>
+            </platform>
+          </platforms>
         </item>
         "@ | Out-File -FilePath version.xml -Encoding utf8
 
-    - name: Zip Artifacts
+
+    - name: Zip Artifacts for All Platforms
       run: |
-        $publishDir = "bin/Release/net8.0/win-x64/publish"
-        Compress-Archive -Path "$publishDir/*" -DestinationPath "b_chronicles-win-x64.zip" -Force
+        $rids = @("win-x64", "linux-x64", "osx-x64", "osx-arm64")
+        foreach ($rid in $rids) {
+          $publishDir = "bin/Release/net8.0/$rid/publish"
+          $zipName = "b_chronicles-$rid.zip"
+          Compress-Archive -Path "$publishDir/*" -DestinationPath $zipName -Force
+        }
+
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
           b_chronicles-win-x64.zip
+          b_chronicles-linux-x64.zip
+          b_chronicles-osx-x64.zip
+          b_chronicles-osx-arm64.zip
           version.xml
-        tag_name: v${{ steps.get_version.outputs.version }} # Uses version from .csproj
+        tag_name: v${{ steps.get_version.outputs.version }}
         name: Release v${{ steps.get_version.outputs.version }}
         body: |
           Automated release for ${{ github.sha }}
           Changelog: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}
-        
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
