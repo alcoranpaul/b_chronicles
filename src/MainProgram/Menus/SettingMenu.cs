@@ -14,6 +14,13 @@ public class SettingsMenu : Menu
             _stateManager.ChangeState(GameStateManager.State.AppInfo);
         });
 
+        Options option2 = new Options("Add to Windows Scheduler", async () =>
+        {
+            SchedulerMenu schedulerMenu = new();
+            await schedulerMenu.ShowAsync();
+        });
+
+
         Options exitOption = new("Exit", () =>
        {
            LogDebug("Requested to end application");
@@ -21,7 +28,9 @@ public class SettingsMenu : Menu
        });
 
 
-
-        await Show("Settings", shouldClearPrev: true, option1, exitOption);
+        if (Utils.PlatformHelper.IsWindows())
+            await Show("Settings", shouldClearPrev: true, option1, option2, exitOption);
+        else
+            await Show("Settings", shouldClearPrev: true, option1, exitOption);
     }
 }
