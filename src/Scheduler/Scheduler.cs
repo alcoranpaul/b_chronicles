@@ -23,10 +23,12 @@ public static class StartupManager
                 if (reg.GetValue(AppName) == null)
                 {
                     reg.SetValue(AppName, $"\"{exePath}\"");
+                    LogInfo("App added to startup.");
                     Print("App added to startup.");
                 }
                 else
                 {
+                    LogWarning("App is already set to run at startup.");
                     Print("App is already set to run at startup.");
                 }
             }
@@ -46,10 +48,12 @@ public static class StartupManager
                 if (reg.GetValue(AppName) != null)
                 {
                     reg.DeleteValue(AppName);
+                    LogInfo("App removed from startup.");
                     Print("App removed from startup.");
                 }
                 else
                 {
+                    LogWarning("App was not set to run at startup.");
                     Print("App was not set to run at startup.");
                 }
             }
