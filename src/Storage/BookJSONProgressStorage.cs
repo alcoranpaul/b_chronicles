@@ -28,6 +28,8 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
 
     public void BeginSession(BookNames book, int chapter, int verse)
     {
+        Dictionary<BookNames, BookProgressState> bookProgress = _cachedProgress.BookProgress;
+
         _cachedProgress = new Data
         {
             CurrentBook = book,
@@ -35,7 +37,8 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
             CurrentVerse = verse,
             NextBook = book,
             NextChapter = chapter,
-            NextVerse = verse + 1
+            NextVerse = verse + 1,
+            BookProgress = bookProgress
         };
 
         SaveToFile();
@@ -44,7 +47,7 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
     public void SaveProgress(BookNames book, int chapter, int verse,
         (BookNames nextBook, int nextChapter, int nextVerse) next)
     {
-        Data newProgress = new Data
+        Data newProgress = new()
         {
             CurrentBook = book,
             CurrentChapter = chapter,
@@ -81,6 +84,7 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
     {
         if (!_cachedProgress.BookProgress.ContainsKey(book))
         {
+
             _cachedProgress.BookProgress.Add(book, state);
         }
         else
