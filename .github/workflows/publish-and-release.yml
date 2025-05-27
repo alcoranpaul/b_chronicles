@@ -25,12 +25,14 @@ jobs:
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
     - name: Publish App
+      shell: bash
       run: |
         dotnet publish -c Release -r win-x64 \
           --self-contained true \
           -p:PublishSingleFile=true \
           -p:IncludeAllContentForSelfExtract=true \
           -p:DebugType=None
+
 
     - name: Generate version.xml
       run: |
