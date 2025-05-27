@@ -15,6 +15,7 @@ public class BMain
     private readonly ContinueMenu _continueReadingMenu = new();
     private readonly CancelledMenu _cancelledReadingMenu = new();
     private readonly SettingsMenu _settingsMenu = new();
+    private readonly AppInfo _appInfo = new();
 
 
     private readonly User _user = User.Instance;
@@ -68,6 +69,10 @@ public class BMain
 
                 case GameStateManager.State.Profile:
                     await _profileMenu.ShowAsync();
+                    break;
+
+                case GameStateManager.State.AppInfo:
+                    await _appInfo.ShowAsync();
                     break;
 
                 case GameStateManager.State.Settings:

@@ -31,6 +31,7 @@ public class GameStateManager : IStateChange
         TypingSession,
         Profile,
         Settings,
+        AppInfo,
         End
     }
 }

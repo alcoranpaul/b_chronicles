@@ -1,14 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+      <!-- Version Info -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    
+    <!-- Developer Info -->
+    <Company>DigiTalino</Company>
+    <Authors>DigiTalino</Authors>
+    <Product>Bible Chronicles</Product>
+    <Description>ADHD-friendly Bible reader</Description>
+    <Copyright>Copyright © 2025</Copyright>
+
+
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
 
-  <!-- Standalone Build Settings -->
-  <PublishSingleFile>true</PublishSingleFile>
-  <SelfContained>true</SelfContained>
-  <RuntimeIdentifier>win-x64</RuntimeIdentifier> <!-- or linux-x64/osx-x64 -->
+    <!-- Standalone Build Settings -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
+    <DebugType>none</DebugType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnvironmentName>Production</EnvironmentName>
