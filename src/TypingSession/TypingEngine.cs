@@ -61,9 +61,18 @@ public class TypingEngine
     private string NormalizeQuotes(string text)
     {
         return text
-            .Replace('\u201c', '"')  // Left curly quote
-            .Replace('\u201d', '"')  // Right curly quote
-            .Replace('\u2018', '\'') // Left single quote
-            .Replace('\u2019', '\''); // Right single quote
+            // Normalize quotes
+            .Replace('\u201c', '"')   // “ → "
+            .Replace('\u201d', '"')   // ” → "
+            .Replace('\u2018', '\'')  // ‘ → '
+            .Replace('\u2019', '\'')  // ’ → '
+                                      // Normalize dashes
+            .Replace('\u2013', '-')   // – → -
+            .Replace('\u2014', '-')   // — → -
+                                      // Normalize spaces and ellipsis
+            .Replace('\u2026', '.')   // … → ... (or keep as-is if preferred)
+                                      // Less common quotes
+            .Replace('\u201A', '\'')  // ‚ → '
+            .Replace('\u201E', '"');   // „ → "
     }
 }
