@@ -37,3 +37,5 @@ logs/
 # Ignore all files in the player directory
 json/
 !json/unlocks/
+
+python/
