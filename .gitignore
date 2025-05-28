@@ -35,5 +35,8 @@ venv/
 logs/
 
 # Ignore all files in the player directory
-json/
+json/*
 !json/unlocks/
+!json/unlocks/**
+
+python/

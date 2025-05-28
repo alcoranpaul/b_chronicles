@@ -1,0 +1,70 @@
+{
+  "genesis 2:7": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Adam",
+        "traits": ["First Man", "Formed From Dust", "Given Life By God's Breath"]
+      }
+    ]
+  },
+  "genesis 2:8": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Planting of the Garden of Eden"
+      }
+    ]
+  },
+  "genesis 2:15": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Assignment of Stewardship of Eden"
+      },
+      {
+        "type": "Trait",
+        "character": "Adam",
+        "value": "Steward of Eden"
+      }
+    ]
+  },
+  "genesis 2:16": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Command to Avoid the Tree of Knowledge of Good and Evil"
+      }
+    ]
+  },
+  "genesis 2:17": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Threat of Death for Eating the Forbidden Fruit"
+      }
+    ]
+  },
+  "genesis 2:21": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Eve",
+        "traits": ["First Woman", "Woman Created from Adam's Rib", "Partner to Adam"]
+      }
+    ]
+  },
+  "genesis 2:22": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Naming of the First Woman"
+      },
+      {
+        "type": "Trait",
+        "character": "Eve",
+        "value": "Named as Woman"
+      }
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "genesis 6:1": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Sons of God",
+        "traits": ["Corrupting Humanity", "Divine Descendants"]
+      },
+      {
+        "type": "Event",
+        "value": "Union of Sons of God with Human Women"
+      }
+    ]
+  },
+  "genesis 6:2": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Humanity's Wickedness Exposed"
+      }
+    ]
+  },
+  "genesis 6:3": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God's Decision to Destroy Humanity"
+      }
+    ]
+  },
+  "genesis 6:4": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Nephilim",
+        "traits": ["Giants", "Children of Divine and Human Beings"]
+      },
+      {
+        "type": "Event",
+        "value": "Nephilim Exist"
+      }
+    ]
+  },
+  "genesis 6:6": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God's Regret Over Humanity's Actions"
+      }
+    ]
+  },
+  "genesis 6:8": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Noah",
+        "traits": ["Found Favor With God"]
+      }
+    ]
+  },
+  "genesis 6:9": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Righteous Man"
+      },
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Blameless In His Generation"
+      },
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Walked With God"
+      }
+    ]
+  },
+  "genesis 6:10": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Ham",
+        "traits": ["Noah's Descendant"]
+      },
+      {
+        "type": "Character",
+        "value": "Shem",
+        "traits": ["Noah's Descendant"]
+      },
+      {
+        "type": "Character",
+        "value": "Japheth",
+        "traits": ["Noah's Descendant"]
+      }
+    ]
+  },
+  "genesis 6:11": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Earth Corrupt and Filled with Violence"
+      }
+    ]
+  },
+  "genesis 6:13": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God's Command to Build Ark"
+      }
+    ]
+  }
+}

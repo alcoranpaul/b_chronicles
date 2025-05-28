@@ -1,0 +1,107 @@
+{
+  "genesis 9:1": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Blessing of Noah and Sons, Command for Humanity to Multiply"
+      }
+    ]
+  },
+  "genesis 9:2": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Custodian of Earth's Creatures"
+      }
+    ]
+  },
+  "genesis 9:3": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Permission to Eat Meat"
+      }
+    ]
+  },
+  "genesis 9:4": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Prohibition on Eating Blood"
+      }
+    ]
+  },
+  "genesis 9:5": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Sanctity of Human Life"
+      }
+    ]
+  },
+  "genesis 9:8": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Covenant of God with Noah"
+      }
+    ]
+  },
+  "genesis 9:9": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Establishment of Rainbow as Covenant Sign"
+      }
+    ]
+  },
+  "genesis 9:10": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Promise of Continued Covenant"
+      }
+    ]
+  },
+  "genesis 9:11": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Eternal Covenant and Promise of Flood's End"
+      }
+    ]
+  },
+  "genesis 9:20": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Noah's Drunkenness and Exposure"
+      }
+    ]
+  },
+  "genesis 9:22": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Ham's Disrespectful Acts Against Noah"
+      }
+    ]
+  },
+  "genesis 9:24": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Cursing of Canaan by Noah"
+      }
+    ]
+  },
+  "genesis 9:25": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Blessing of Shem and Japheth by Noah"
+      }
+    ]
+  }
+}
