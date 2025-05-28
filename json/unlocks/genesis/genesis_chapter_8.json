@@ -1,0 +1,59 @@
+{
+  "genesis 8:1": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Earth Dries After Flood"
+      }
+    ]
+  },
+  "genesis 8:17": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Noah and Family Leave Ark"
+      }
+    ]
+  },
+  "genesis 8:18": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Noah Releases Animals from Ark"
+      }
+    ]
+  },
+  "genesis 8:19": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Offering Sacrifices to God"
+      }
+    ]
+  },
+  "genesis 8:20": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God Establishes Covenant with Noah"
+      }
+    ]
+  },
+  "genesis 8:21": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God's Covenant: No Future Floods"
+      }
+    ]
+  },
+  "genesis 8:22": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God's Promise of Seasons and Covenants"
+      }
+    ]
+  }
+}

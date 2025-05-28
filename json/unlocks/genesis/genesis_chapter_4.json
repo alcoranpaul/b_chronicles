@@ -1,0 +1,108 @@
+{
+  "genesis 4:1": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Cain",
+        "traits": ["Firstborn Son", "Son of Adam and Eve"]
+      },
+      {
+        "type": "Character",
+        "value": "Abel",
+        "traits": ["Secondborn Son", "Son of Adam and Eve"]
+      }
+    ]
+  },
+  "genesis 4:2": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Abel",
+        "value": "Shepherd"
+      }
+    ]
+  },
+  "genesis 4:3": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Cain and Abel Offer Sacrifices to God"
+      }
+    ]
+  },
+  "genesis 4:4": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God Accepts Abel's Sacrifice but Rejects Cain's"
+      }
+    ]
+  },
+  "genesis 4:5": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Cain",
+        "value": "Disappointed"
+      }
+    ]
+  },
+  "genesis 4:6": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God Warns Cain About the Presence of Sin"
+      }
+    ]
+  },
+  "genesis 4:8": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Cain Kills Abel, Marking the First Human Murder"
+      }
+    ]
+  },
+  "genesis 4:10": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Abel's Blood Cries Out to God for Justice"
+      }
+    ]
+  },
+  "genesis 4:11": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "God Curses Cain for Abel's Murder"
+      }
+    ]
+  },
+  "genesis 4:12": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Cain",
+        "value": "Exiled Fugitive"
+      }
+    ]
+  },
+  "genesis 4:15": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Cain",
+        "value": "Marked by God to Avoid Vengeance"
+      }
+    ]
+  },
+  "genesis 4:16": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Cain Establishes a City in the Land of Nod"
+      }
+    ]
+  }
+}

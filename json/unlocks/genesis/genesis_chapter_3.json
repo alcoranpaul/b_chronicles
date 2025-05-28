@@ -1,0 +1,109 @@
+{
+"genesis 3:1": {
+  "unlocks": [
+    {
+      "type": "Character",
+      "value": "Serpent",
+      "traits": ["Deceitful", "Cunning"]
+    }
+  ]
+},
+"genesis 3:4": {
+  "unlocks": [
+    {
+      "type": "Trait",
+      "character": "Serpent",
+      "value": "Daring Challenge"
+    }
+  ]
+},
+"genesis 3:6": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Eating Forbidden Fruit"
+    }
+  ]
+},
+"genesis 3:7": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Guilt and Shame Discovery"
+    }
+  ]
+},
+"genesis 3:8": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Hiding from God"
+    }
+  ]
+},
+"genesis 3:10": {
+  "unlocks": [
+    {
+      "type": "Trait",
+      "character": "Adam",
+      "value": "Blameworthy"
+    },
+    {
+      "type": "Trait",
+      "character": "Eve",
+      "value": "Defiant"
+    }
+  ]
+},
+"genesis 3:14": {
+  "unlocks": [
+    {
+      "type": "Trait",
+      "character": "Serpent",
+      "value": "Cursed"
+    }
+  ]
+},
+"genesis 3:15": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Promise of Enmity"
+    }
+  ]
+},
+"genesis 3:16": {
+  "unlocks": [
+    {
+      "type": "Trait",
+      "character": "Eve",
+      "value": "Suffering Mother"
+    },
+    {
+      "type": "Trait",
+      "character": "Eve",
+      "value": "Submissive"
+    }
+  ]
+},
+"genesis 3:17": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Curse on the Ground"
+    },
+    {
+      "type": "Trait",
+      "character": "Adam",
+      "value": "Laborer"
+    }
+  ]
+},
+"genesis 3:20": {
+  "unlocks": [
+    {
+      "type": "Event",
+      "value": "Naming the Woman as Eve"
+    }
+  ]
+}}
