@@ -147,14 +147,14 @@ public class AutoUpdater
 
             Console.WriteLine("Download complete. Preparing to update...");
 
-            string exeName = Process.GetCurrentProcess().MainModule?.FileName;
+            string? exeName = Process.GetCurrentProcess().MainModule?.FileName;
             if (exeName == null)
             {
                 LogError("Failed to detect application name.");
                 return;
             }
 
-            string exeDir = Path.GetDirectoryName(exeName);
+            string? exeDir = Path.GetDirectoryName(exeName);
             if (string.IsNullOrEmpty(exeDir))
             {
                 LogError("Failed to detect application directory.");
