@@ -33,6 +33,21 @@
     <EnvironmentName>Production</EnvironmentName>
   </PropertyGroup>
 
+  <!-- Define WINDOWS for Windows runtimes -->
+<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64' OR '$(RuntimeIdentifier)' == 'win-arm64'">
+    <DefineConstants>WINDOWS</DefineConstants>
+</PropertyGroup>
+
+<!-- Define LINUX for Linux runtimes -->
+<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' OR '$(RuntimeIdentifier)' == 'linux-arm64'">
+    <DefineConstants>LINUX</DefineConstants>
+</PropertyGroup>
+
+<!-- Define MACOS for macOS runtimes -->
+<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64' OR '$(RuntimeIdentifier)' == 'osx-arm64'">
+    <DefineConstants>MACOS</DefineConstants>
+</PropertyGroup>
+
   <ItemGroup>
         <Exclude Include="python\**" />
   </ItemGroup>
