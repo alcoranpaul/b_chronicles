@@ -28,17 +28,20 @@ jobs:
         id: changelog
         run: |
           # Get the previous tag (last released version)
-          $lastTag = git describe --tags --match "v*" --abbrev=0 HEAD^ 2>$null || echo "v0.0.0"
+          $lastTag = git describe --tags --match "v*" --abbrev=0 HEAD~1 2>$null
 
-          if ($lastTag -eq "") {
-            $lastTag = "v0.0.0"
+          if (-not $lastTag) {
+              $lastTag = "v0.0.0"
+              Write-Output "No previous tag found. Using '$lastTag' as fallback."
           }
 
           # Get commit history between last tag and current commit
           $changelog = git log --pretty=format:"* %s (%an)%n  - %H" $($lastTag)..HEAD
 
           echo "Changelog:`n$changelog" | Out-File -FilePath changelog.md -Encoding utf8
-          echo "::set-output name=changelog::$changelog"
+          echo "changelog<<EOF" >> $env:GITHUB_OUTPUT
+          echo "$changelog" >> $env:GITHUB_OUTPUT
+          echo "EOF" >> $env:GITHUB_OUTPUT
 
       - name: Publish App for All Platforms
         shell: bash
