@@ -4,7 +4,7 @@ Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. Th
 
 ## Supported Platforms
 - **Windows**: The application is primarily developed for Windows using .NET 8.0.
-- **Linux/macOS**: The application does run on Linux and macOS, yet!
+- **Linux/macOS**: The application does run on Linux and macOS.
 - **Web**: The project is not designed for web deployment, but the code can be adapted for web applications if desired.
 - **Mobile**: The project is not currently designed for mobile platforms, but could be adapted for mobile development.
 
@@ -12,10 +12,15 @@ Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. Th
 
 - **Bible Reading & Typing Sessions:** Read and type Bible verses to track your progress.
 - **Progress Tracking:** Maintains your current reading progress and stores it in JSON.
-- **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
 - **Logging:** Uses Serilog to log application events, with both file and console sinks.
 - **Auto Updates:** Checks for updates via GitHub releases.
-- **Customizable Environment:** Easily set your environment (Development/Production).
+
+## Upcoming Features
+
+- **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
+- **Profile System:** Create and manage user profiles to track individual progress and preferences.
+- **Events System:** Participate in story or seasonal events to unlock unique rewards and content.
+
 
 ## Project Structure
 
