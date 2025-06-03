@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Player;
 using Utils;
 
@@ -17,6 +18,11 @@ public class BMain
     private readonly SettingsMenu _settingsMenu = new();
     private readonly AppInfo _appInfo = new();
 
+    [DllImport("kernel32.dll")]
+    private static extern bool SetConsoleCtrlHandler(HandlerRoutine handler, bool add);
+    private delegate bool HandlerRoutine(uint dwCtrlType);
+
+
 
     private readonly User _user = User.Instance;
 
@@ -28,11 +34,14 @@ public class BMain
         _unlockManager = UnlockManager.Instance;
     }
 
+    /// <summary>
+    /// Executes the main application loop asynchronously, handling exceptions and restoring console settings.
+    /// </summary>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public async Task Run()
     {
         try
         {
-
             await RunApp();
         }
         catch (Exception ex)
@@ -43,16 +52,25 @@ public class BMain
         RestoreConsoleSettings();
     }
 
+    /// <summary>
+    /// Initializes the application.
+    /// Hides the console cursor and clears the console.
+    /// </summary>
     private void InitializeApp()
     {
         Console.CursorVisible = false;
-
+        SetConsoleCtrlHandler(Handler, true);
         Console.Clear();
     }
 
 
-
-
+    /// <summary>
+    /// Executes the main application loop, handling state transitions and exceptions.
+    /// </summary>
+    /// <remarks>
+    /// This method is the main entry point for the application logic.
+    /// It will loop until the application is in the <see cref="GameStateManager.State.End"/> state.
+    /// </remarks>
     private async Task RunApp()
     {
         while (_stateManager.CurrentState != GameStateManager.State.End)
@@ -89,8 +107,16 @@ public class BMain
         End();
     }
 
+    /// <summary>
+    /// Performs cleanup and releases resources for the application.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when the application is exiting.
+    /// </remarks>
     private void End()
     {
+        LogInfo($"Program Terminated.");
+
         if (_user != null)
         {
             _user.End();
@@ -99,6 +125,15 @@ public class BMain
         }
     }
 
+    /// <summary>
+    /// Processes the next typing session in the queue.
+    /// </summary>
+    /// <remarks>
+    /// If there are no more sessions available, the application transitions to the main menu.
+    /// If the session is completed, the user is asked if they want to continue reading.
+    /// If the session is canceled, the user is shown a cancelled menu.
+    /// If the session has an error, an error message is logged.
+    /// </remarks>
     private async Task ProcessSessions()
     {
         if (!_sessionManager.HasSessions())
@@ -132,10 +167,25 @@ public class BMain
     }
 
 
+    /// <summary>
+    /// Handles console closing events. Ends the program and returns true to
+    /// prevent the default action of displaying an error message.
+    /// </summary>
+    /// <param name="dwCtrlType">The type of control signal.</param>
+    /// <returns>true</returns>
+    private bool Handler(uint dwCtrlType)
+    {
+        End();
+        return true;
+    }
 
-
-
-
+    /// <summary>
+    /// Restores the console settings to their original values.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when the application is exiting.
+    /// It is used to restore the console settings to their original values.
+    /// </remarks>
     private void RestoreConsoleSettings()
     {
         Console.CursorVisible = true; // Restore cursor visibility
