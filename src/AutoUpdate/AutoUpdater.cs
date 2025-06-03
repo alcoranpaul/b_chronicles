@@ -131,11 +131,16 @@ public class AutoUpdater
             Console.WriteLine("Downloading update...");
 
             using (var client = new HttpClient())
-            using (var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
             {
-                response.EnsureSuccessStatusCode();
-                await using var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None);
-                await response.Content.CopyToAsync(fs);
+                // ✅ Set proper User-Agent header
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("BibleChronicles-Updater/1.0");
+
+                using (var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+                    await using var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                    await response.Content.CopyToAsync(fs);
+                }
             }
 
             LogInfo("Download complete.");
@@ -143,6 +148,12 @@ public class AutoUpdater
             Console.WriteLine("Download complete. Preparing to update...");
 
             string exeName = Process.GetCurrentProcess().MainModule?.FileName;
+            if (exeName == null)
+            {
+                LogError("Failed to detect application name.");
+                return;
+            }
+
             string exeDir = Path.GetDirectoryName(exeName);
             if (string.IsNullOrEmpty(exeDir))
             {
@@ -190,9 +201,6 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-
-echo [{DateTime.Now}] Starting updated application >> %LOG%
-start "" ""{Path.Combine(exeDir, exeName)}""
 
 echo [{DateTime.Now}] Cleaning up update files >> %LOG%
 rd /s /q ""%EXTRACT_DIR%""
