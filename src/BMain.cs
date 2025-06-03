@@ -28,11 +28,14 @@ public class BMain
         _unlockManager = UnlockManager.Instance;
     }
 
+    /// <summary>
+    /// Executes the main application loop asynchronously, handling exceptions and restoring console settings.
+    /// </summary>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public async Task Run()
     {
         try
         {
-
             await RunApp();
         }
         catch (Exception ex)
@@ -43,6 +46,10 @@ public class BMain
         RestoreConsoleSettings();
     }
 
+    /// <summary>
+    /// Initializes the application.
+    /// Hides the console cursor and clears the console.
+    /// </summary>
     private void InitializeApp()
     {
         Console.CursorVisible = false;
@@ -51,8 +58,13 @@ public class BMain
     }
 
 
-
-
+    /// <summary>
+    /// Executes the main application loop, handling state transitions and exceptions.
+    /// </summary>
+    /// <remarks>
+    /// This method is the main entry point for the application logic.
+    /// It will loop until the application is in the <see cref="GameStateManager.State.End"/> state.
+    /// </remarks>
     private async Task RunApp()
     {
         while (_stateManager.CurrentState != GameStateManager.State.End)
@@ -89,6 +101,12 @@ public class BMain
         End();
     }
 
+    /// <summary>
+    /// Performs cleanup and releases resources for the application.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when the application is exiting.
+    /// </remarks>
     private void End()
     {
         if (_user != null)
@@ -99,6 +117,15 @@ public class BMain
         }
     }
 
+    /// <summary>
+    /// Processes the next typing session in the queue.
+    /// </summary>
+    /// <remarks>
+    /// If there are no more sessions available, the application transitions to the main menu.
+    /// If the session is completed, the user is asked if they want to continue reading.
+    /// If the session is canceled, the user is shown a cancelled menu.
+    /// If the session has an error, an error message is logged.
+    /// </remarks>
     private async Task ProcessSessions()
     {
         if (!_sessionManager.HasSessions())
@@ -130,12 +157,13 @@ public class BMain
         }
 
     }
-
-
-
-
-
-
+    /// <summary>
+    /// Restores the console settings to their original values.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when the application is exiting.
+    /// It is used to restore the console settings to their original values.
+    /// </remarks>
     private void RestoreConsoleSettings()
     {
         Console.CursorVisible = true; // Restore cursor visibility
