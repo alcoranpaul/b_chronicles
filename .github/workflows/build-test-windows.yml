@@ -1,6 +1,7 @@
 name: Build Test (Windows)
 
 on:
+  workflow_call:
   push:
     branches-ignore:
       - "master"
