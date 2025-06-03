@@ -16,7 +16,7 @@ public class UnlockManager
 
     private void OnSessionCompleted(BookNames book, int chapter, int verse)
     {
-        string fileName = GetUnlockJSONName(book, verse) + ".json";
+        string fileName = GetUnlockJSONName(book, verse);
 
         try
         {
@@ -96,7 +96,7 @@ public class UnlockManager
 
     private string GetUnlockJSONName(BookNames book, int verse)
     {
-        return $"unlocks_{book.ToString().ToLower()}_chapter_{verse}";
+        return $"{book.ToString().ToLower()}_chapter_{verse}.json";
     }
 
     public class UnlockData : Dictionary<string, UnlockEntry>

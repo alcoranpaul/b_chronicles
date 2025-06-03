@@ -1,0 +1,129 @@
+{
+  "genesis 1:1": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Creation of the Heavens and Earth"
+      }
+    ]
+  },
+  "genesis 1:2": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Holy Spirit",
+        "traits": ["Eternal", "Creative Power"]
+      },
+      {
+        "type": "Event",
+        "value": "Spirit of God Moving Over Waters"
+      }
+    ]
+  },
+  "genesis 1:3": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Creation of Light"
+      }
+    ]
+  },
+  "genesis 1:4": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Separation of Light and Darkness"
+      }
+    ]
+  },
+  "genesis 1:5": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Naming of Day and Night"
+      }
+    ]
+  },
+  "genesis 1:6": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Creation of the Firmament (Sky)"
+      }
+    ]
+  },
+  "genesis 1:7": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Separation of Waters into Upper and Lower"
+      }
+    ]
+  },
+  "genesis 1:8": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Formation of Seas and Dry Land"
+      }
+    ]
+  },
+  "genesis 1:9": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Gathering of Waters into Seas"
+      }
+    ]
+  },
+  "genesis 1:10": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Naming of Dry Land and Seas"
+      }
+    ]
+  },
+  "genesis 1:11": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Creation of Vegetation and Trees"
+      }
+    ]
+  },
+  "genesis 1:14": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Creation of Sun, Moon, and Stars"
+      }
+    ]
+  },
+  "genesis 1:26": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Humans",
+        "traits": ["Created in God's Image", "Assigned Dominion Over Earth"]
+      }
+    ]
+  },
+  "genesis 1:27": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Humans",
+        "value": "Male and Female"
+      }
+    ]
+  },
+  "genesis 1:28": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Endowment of Dominion and Reproduction"
+      }
+    ]
+  }
+}

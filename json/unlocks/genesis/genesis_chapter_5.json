@@ -1,0 +1,130 @@
+{
+  "genesis 5:1": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Adam",
+        "traits": ["First Man", "Created in God's Image", "Father of Seth"]
+      }
+    ]
+  },
+  "genesis 5:3": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Seth",
+        "traits": ["Replacement for Abel", "Son of Adam", "Ancestor of Noah's Line"]
+      }
+    ]
+  },
+  "genesis 5:4": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Enosh",
+        "traits": ["Son of Seth", "Ancestor of Noah's Line"]
+      }
+    ]
+  },
+  "genesis 5:5": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Kenan",
+        "traits": ["Son of Enosh", "Ancestor of Noah's Line"]
+      }
+    ]
+  },
+  "genesis 5:6": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Mahalalel",
+        "traits": ["Son of Kenan", "Ancestor of Noah's Line"]
+      }
+    ]
+  },
+  "genesis 5:7": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Jared",
+        "traits": ["Son of Mahalalel", "Ancestor of Noah's Line"]
+      }
+    ]
+  },
+  "genesis 5:8": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Enoch",
+        "traits": ["Son of Jared", "Walked with God"]
+      },
+      {
+        "type": "Event",
+        "value": "Taken by God, Not Seen Again"
+      }
+    ]
+  },
+  "genesis 5:9": {
+    "unlocks": [
+      {
+        "type": "Character",
+        "value": "Methuselah",
+        "traits": ["Son of Enoch", "Father of Lamech"]
+      }
+    ]
+  },
+  "genesis 5:10": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Methuselah's Son Lamech Born"
+      },
+      {
+        "type": "Trait",
+        "character": "Lamech",
+        "value": "Son of Methuselah"
+      }
+    ]
+  },
+  "genesis 5:18": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Lamech's Son Noah Born"
+      },
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Son of Lamech"
+      }
+    ]
+  },
+  "genesis 5:29": {
+    "unlocks": [
+      {
+        "type": "Trait",
+        "character": "Noah",
+        "value": "Named as a Comforter"
+      },
+      {
+        "type": "Event",
+        "value": "Lamech Conveys Noah's Symbolic Role of Rest"
+      }
+    ]
+  },
+  "genesis 5:25": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Enoch's Life Span and Divine Removal"
+      },
+      {
+        "type": "Trait",
+        "character": "Methuselah",
+        "value": "Longest-Lived Man"
+      }
+    ]
+  }
+}

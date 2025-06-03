@@ -1,0 +1,66 @@
+{
+  "genesis 7:1": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Flood Command Given to Noah"
+      }
+    ]
+  },
+  "genesis 7:4": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Flood Duration Established at 40 Days"
+      }
+    ]
+  },
+  "genesis 7:11": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Floodgates Open, Rains Begin"
+      }
+    ]
+  },
+  "genesis 7:13": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Noah and Family Enter Ark"
+      }
+    ]
+  },
+  "genesis 7:16": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Ark Door Closed by Noah"
+      }
+    ]
+  },
+  "genesis 7:19": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "Floodwaters Cover Mountains, Earth is Immersed"
+      }
+    ]
+  },
+  "genesis 7:21": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "All Living Creatures Die"
+      }
+    ]
+  },
+  "genesis 7:23": {
+    "unlocks": [
+      {
+        "type": "Event",
+        "value": "All Living Things on Earth Perish"
+      }
+    ]
+  }
+}
