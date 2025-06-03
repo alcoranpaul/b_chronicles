@@ -1,6 +1,7 @@
-name: Build Test
+name: Build Test (Linux)
 
 on:
+  workflow_call:
   push:
     branches-ignore:
       - "master"
@@ -10,8 +11,8 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    name: Build Project
+    runs-on: ubuntu-latest
+    name: Build Project - Linux
 
     steps:
       - name: Checkout Code
@@ -27,3 +28,9 @@ jobs:
 
       - name: Build Project
         run: dotnet build -c Release --no-restore
+
+      - name: Print OS Info
+        run: |
+          echo "Running on Linux: $(uname -a)"
+          echo "Dotnet runtime:"
+          dotnet --info

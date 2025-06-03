@@ -2,9 +2,18 @@
 
 Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. The application allows users to read Bible passages, complete typing sessions, and unlock characters, traits, and events as you progress through the Bible.
 
+Video Demo: https://www.youtube.com/watch?v=bdNx5X-w5aY
+
+## Status
+[![Release All Platforms Build](https://github.com/alcoranpaul/b_chronicles/actions/workflows/publish-and-release.yml/badge.svg?branch=master&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/publish-and-release.yml)
+[![Test Linux](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-linux.yml/badge.svg?branch=master&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-linux.yml)
+[![Test MacOS](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-macos.yml/badge.svg?branch=master&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-macos.yml)
+[![Test Windows](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-windows.yml/badge.svg?branch=master&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-windows.yml)
+
+
 ## Supported Platforms
 - **Windows**: The application is primarily developed for Windows using .NET 8.0.
-- **Linux/macOS**: The application does run on Linux and macOS, yet!
+- **Linux/macOS**: The application does run on Linux and macOS.
 - **Web**: The project is not designed for web deployment, but the code can be adapted for web applications if desired.
 - **Mobile**: The project is not currently designed for mobile platforms, but could be adapted for mobile development.
 
@@ -12,10 +21,23 @@ Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. Th
 
 - **Bible Reading & Typing Sessions:** Read and type Bible verses to track your progress.
 - **Progress Tracking:** Maintains your current reading progress and stores it in JSON.
-- **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
 - **Logging:** Uses Serilog to log application events, with both file and console sinks.
 - **Auto Updates:** Checks for updates via GitHub releases.
-- **Customizable Environment:** Easily set your environment (Development/Production).
+
+## Upcoming Features
+
+- [ ] **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
+- [ ] **Profile System:** Create and manage user profiles to track individual progress and preferences.
+- [ ] **Events System:** Participate in story or seasonal events to unlock unique rewards and content.
+- [ ] **Daily Reading Goals & Streaks**: Set daily verse goal (e.g., "Read 5 verses")
+- [ ] **Achievements & Badges**: “First Chapter Completed”
+- [ ] **Freemode**: Explore the bible
+- [ ] **Progress Dashboard**: Stats screen
+- [ ] **Mini-Games or Typing Challenges**: Short quiz after a passage
+- [ ] **Bookmarks & Notes System**: Tag notes by topic (e.g., “Grace”, “Faith”)
+- [ ] **Seasonal Events & Themes**: Easter event: unlock special content
+- [ ] **Accuracy + Speed Tracking**
+
 
 ## Project Structure
 

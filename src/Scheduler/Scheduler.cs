@@ -1,4 +1,8 @@
+#nullable enable
+using System;
+using System.Diagnostics;
 using Microsoft.Win32;
+
 namespace main;
 
 public static class StartupManager
@@ -6,9 +10,10 @@ public static class StartupManager
     private static readonly string AppName = "BibleChronicles";
     private static readonly string RunKeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 
+#if WINDOWS
     public static void AddAppToStartup()
     {
-        string exePath = Environment.ProcessPath!;
+        string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
 
         if (exePath == null || string.IsNullOrEmpty(exePath))
         {
@@ -18,19 +23,17 @@ public static class StartupManager
 
         try
         {
-            using (RegistryKey reg = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+            using RegistryKey? reg = Registry.CurrentUser.OpenSubKey(RunKeyPath, true);
+            if (reg?.GetValue(AppName) == null)
             {
-                if (reg.GetValue(AppName) == null)
-                {
-                    reg.SetValue(AppName, $"\"{exePath}\"");
-                    LogInfo("App added to startup.");
-                    Print("App added to startup.");
-                }
-                else
-                {
-                    LogWarning("App is already set to run at startup.");
-                    Print("App is already set to run at startup.");
-                }
+                reg?.SetValue(AppName, $"\"{exePath}\"");
+                LogInfo($"App added to startup");
+                Print("App added to startup.");
+            }
+            else
+            {
+                LogWarning("App is already set to run at startup.");
+                Print("App is already set to run at startup.");
             }
         }
         catch (Exception ex)
@@ -43,19 +46,17 @@ public static class StartupManager
     {
         try
         {
-            using (RegistryKey reg = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+            using RegistryKey? reg = Registry.CurrentUser.OpenSubKey(RunKeyPath, true);
+            if (reg?.GetValue(AppName) != null)
             {
-                if (reg.GetValue(AppName) != null)
-                {
-                    reg.DeleteValue(AppName);
-                    LogInfo("App removed from startup.");
-                    Print("App removed from startup.");
-                }
-                else
-                {
-                    LogWarning("App was not set to run at startup.");
-                    Print("App was not set to run at startup.");
-                }
+                reg?.DeleteValue(AppName);
+                LogInfo("App removed from startup.");
+                Print("App removed from startup.");
+            }
+            else
+            {
+                LogWarning("App was not set to run at startup.");
+                Print("App was not set to run at startup.");
             }
         }
         catch (Exception ex)
@@ -63,4 +64,19 @@ public static class StartupManager
             LogError("Failed to remove from startup: " + ex.Message);
         }
     }
+#else
+    // No-op stubs for non-Windows platforms
+    public static void AddAppToStartup()
+    {
+        LogInfo("Startup management is only supported on Windows.");
+        Print("Startup management is only supported on Windows.");
+    }
+
+    public static void RemoveAppFromStartup()
+    {
+        LogInfo("Startup management is only supported on Windows.");
+        Print("Startup management is only supported on Windows.");
+    }
+#endif
+
 }
