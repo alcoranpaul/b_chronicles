@@ -19,7 +19,7 @@ public class BMain
     private readonly AppInfo _appInfo = new();
 
     [DllImport("kernel32.dll")]
-    private static extern bool SetShutdownHandler(HandlerRoutine handler, bool add);
+    private static extern bool SetConsoleCtrlHandler(HandlerRoutine handler, bool add);
     private delegate bool HandlerRoutine(uint dwCtrlType);
 
 
@@ -59,7 +59,7 @@ public class BMain
     private void InitializeApp()
     {
         Console.CursorVisible = false;
-        SetShutdownHandler(ShutdownHandler, true);
+        SetConsoleCtrlHandler(Handler, true);
         Console.Clear();
     }
 
@@ -173,7 +173,7 @@ public class BMain
     /// </summary>
     /// <param name="dwCtrlType">The type of control signal.</param>
     /// <returns>true</returns>
-    private bool ShutdownHandler(uint dwCtrlType)
+    private bool Handler(uint dwCtrlType)
     {
         End();
         return true;
