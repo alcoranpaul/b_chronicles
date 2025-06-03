@@ -7,7 +7,17 @@ on:
 permissions:
   contents: write
 
+
 jobs:
+  test-windows:
+    uses: ./.github/workflows/build-test-windows.yml
+
+  test-macos:
+    uses: ./.github/workflows/build-test-macos.yml
+
+  test-linux:
+    uses: ./.github/workflows/build-test-linux.yml
+
   build-and-publish:
     runs-on: windows-latest
     steps:

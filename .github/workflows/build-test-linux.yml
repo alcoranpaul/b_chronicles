@@ -1,6 +1,7 @@
 name: Build Test (Linux)
 
 on:
+  workflow_call:
   push:
     branches-ignore:
       - "master"
