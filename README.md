@@ -17,9 +17,17 @@ Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. Th
 
 ## Upcoming Features
 
-- **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
-- **Profile System:** Create and manage user profiles to track individual progress and preferences.
-- **Events System:** Participate in story or seasonal events to unlock unique rewards and content.
+- [ ] **Unlockable Characters & Traits:** Unlock new characters and traits as you complete verses.
+- [ ] **Profile System:** Create and manage user profiles to track individual progress and preferences.
+- [ ] **Events System:** Participate in story or seasonal events to unlock unique rewards and content.
+- [ ] **Daily Reading Goals & Streaks**: Set daily verse goal (e.g., "Read 5 verses")
+- [ ] **Achievements & Badges**: “First Chapter Completed”
+- [ ] **Freemode**: Explore the bible
+- [ ] **Progress Dashboard**: Stats screen
+- [ ] **Mini-Games or Typing Challenges**: Short quiz after a passage
+- [ ] **Bookmarks & Notes System**: Tag notes by topic (e.g., “Grace”, “Faith”)
+- [ ] **Seasonal Events & Themes**: Easter event: unlock special content
+- [ ] **Accuracy + Speed Tracking**
 
 
 ## Project Structure
