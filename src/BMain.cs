@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Player;
 using Utils;
 
@@ -16,6 +17,10 @@ public class BMain
     private readonly CancelledMenu _cancelledReadingMenu = new();
     private readonly SettingsMenu _settingsMenu = new();
     private readonly AppInfo _appInfo = new();
+
+    [DllImport("kernel32.dll")]
+    private static extern bool SetShutdownHandler(HandlerRoutine handler, bool add);
+
 
 
     private readonly User _user = User.Instance;
@@ -46,7 +51,7 @@ public class BMain
     private void InitializeApp()
     {
         Console.CursorVisible = false;
-
+        SetShutdownHandler(ShutdownHandler, true);
         Console.Clear();
     }
 
@@ -91,6 +96,8 @@ public class BMain
 
     private void End()
     {
+        LogInfo($"Program Terminated.");
+
         if (_user != null)
         {
             _user.End();
@@ -133,7 +140,13 @@ public class BMain
 
 
 
+    private delegate bool HandlerRoutine(uint dwCtrlType);
 
+    private bool ShutdownHandler(uint dwCtrlType)
+    {
+        End();
+        return true;
+    }
 
 
     private void RestoreConsoleSettings()
