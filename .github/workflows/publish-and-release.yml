@@ -27,15 +27,15 @@ jobs:
       - name: Get Changelog from Git Log
         id: changelog
         run: |
-          # Get the latest tag that points to an ancestor of HEAD
+          # Try to get the latest tag
           $lastTag = git describe --tags --match "v*" --abbrev=0 HEAD^{} 2>$null
 
           if (-not $lastTag) {
               Write-Output "No previous tag found. Showing all commits since the beginning of the project."
-              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short $($lastTag)..HEAD
+              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short
           } else {
               Write-Output "Found previous tag: $lastTag. Generating changelog..."
-              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short $($lastTag)..HEAD
+              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short "$lastTag..HEAD"
           }
 
           echo "Changelog:`n$changelog" | Out-File -FilePath changelog.md -Encoding utf8
