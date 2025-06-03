@@ -20,6 +20,7 @@ public class BMain
 
     [DllImport("kernel32.dll")]
     private static extern bool SetShutdownHandler(HandlerRoutine handler, bool add);
+    private delegate bool HandlerRoutine(uint dwCtrlType);
 
 
 
@@ -140,8 +141,13 @@ public class BMain
 
 
 
-    private delegate bool HandlerRoutine(uint dwCtrlType);
 
+    /// <summary>
+    /// Handles console closing events. Ends the program and returns true to
+    /// prevent the default action of displaying an error message.
+    /// </summary>
+    /// <param name="dwCtrlType">The type of control signal.</param>
+    /// <returns>true</returns>
     private bool ShutdownHandler(uint dwCtrlType)
     {
         End();
