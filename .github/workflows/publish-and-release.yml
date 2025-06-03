@@ -10,87 +10,108 @@ permissions:
 jobs:
   build-and-publish:
     runs-on: windows-latest
-    
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - uses: actions/checkout@v4
 
-    - name: Extract Project Version
-      id: get_version
-      run: |
-        # Extract version from .csproj (e.g., "1.2.3")
-        $version = (Select-String -Path '*.csproj' -Pattern '<Version>(.*?)<\/Version>').Matches.Groups[1].Value
-        echo "Extracted version: $version"
-        echo "version=$version" >> $env:GITHUB_OUTPUT
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Publish App for All Platforms
-      shell: bash
-      run: |
-        for RID in win-x64 linux-x64 osx-x64 osx-arm64; do
-          dotnet publish -c Release -r $RID \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -p:IncludeAllContentForSelfExtract=true \
-            -p:DebugType=None
-        done
+      - name: Extract Project Version
+        id: get_version
+        run: |
+          $version = (Select-String -Path '*.csproj' -Pattern '<Version>(.*?)<\/Version>').Matches.Groups[1].Value
+          echo "version=$version" >> $env:GITHUB_OUTPUT
 
+      - name: Get Changelog from Git Log
+        id: changelog
+        run: |
+          # Get the previous tag (last released version)
+          $lastTag = git describe --tags --match "v*" --abbrev=0 HEAD^ 2>$null || echo "v0.0.0"
 
+          if ($lastTag -eq "") {
+            $lastTag = "v0.0.0"
+          }
 
-    - name: Generate version.xml
-      run: |
-        $version = "${{ steps.get_version.outputs.version }}"
-        $repo = "${{ github.repository }}"
+          # Get commit history between last tag and current commit
+          $changelog = git log --pretty=format:"* %s (%an)%n  - %H" $($lastTag)..HEAD
 
-        @"
-        <?xml version="1.0" encoding="utf-8"?>
-        <item>
-          <version>$version</version>
-          <changelog>https://github.com/$repo/releases/tag/v$version</changelog>
-          <platforms>
-            <platform os="windows" arch="x64">
-              <url>https://github.com/$repo/releases/latest/download/b_chronicles-win-x64.zip</url>
-            </platform>
-            <platform os="linux" arch="x64">
-              <url>https://github.com/$repo/releases/latest/download/b_chronicles-linux-x64.zip</url>
-            </platform>
-            <platform os="osx" arch="x64">
-              <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-x64.zip</url>
-            </platform>
-            <platform os="osx" arch="arm64">
-              <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-arm64.zip</url>
-            </platform>
-          </platforms>
-        </item>
-        "@ | Out-File -FilePath version.xml -Encoding utf8
+          echo "Changelog:`n$changelog" | Out-File -FilePath changelog.md -Encoding utf8
+          echo "::set-output name=changelog::$changelog"
 
+      - name: Publish App for All Platforms
+        shell: bash
+        run: |
+          for RID in win-x64 linux-x64 osx-x64 osx-arm64; do
+            dotnet publish -c Release -r $RID \
+              --self-contained true \
+              -p:PublishSingleFile=true \
+              -p:IncludeAllContentForSelfExtract=true \
+              -p:DebugType=None
+          done
 
-    - name: Zip Artifacts for All Platforms
-      run: |
-        $rids = @("win-x64", "linux-x64", "osx-x64", "osx-arm64")
-        foreach ($rid in $rids) {
-          $publishDir = "bin/Release/net8.0/$rid/publish"
-          $zipName = "b_chronicles-$rid.zip"
-          Compress-Archive -Path "$publishDir/*" -DestinationPath $zipName -Force
-        }
+      - name: Zip Artifacts for All Platforms
+        run: |
+          $rids = @("win-x64", "linux-x64", "osx-x64", "osx-arm64")
+          foreach ($rid in $rids) {
+            $publishDir = "bin/Release/net8.0/$rid/publish"
+            $zipName = "b_chronicles-$rid.zip"
+            Compress-Archive -Path "$publishDir/*" -DestinationPath $zipName -Force
+          }
 
+      - name: Generate version.xml
+        run: |
+          $version = "${{ steps.get_version.outputs.version }}"
+          $repo = "${{ github.repository }}"
+          $changelog = "${{ steps.changelog.outputs.changelog }}"
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          b_chronicles-win-x64.zip
-          b_chronicles-linux-x64.zip
-          b_chronicles-osx-x64.zip
-          b_chronicles-osx-arm64.zip
-          version.xml
-        tag_name: v${{ steps.get_version.outputs.version }}
-        name: Release v${{ steps.get_version.outputs.version }}
-        body: |
-          Automated release for ${{ github.sha }}
-          Changelog: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <item>
+            <version>$version</version>
+            <changelog>
+              <![CDATA[
+              $changelog
+              ]]>
+            </changelog>  
+            <platforms>
+              <platform os="windows" arch="x64">
+                <url>https://github.com/$repo/releases/latest/download/b_chronicles-win-x64.zip</url>   
+              </platform>
+              <platform os="linux" arch="x64">
+                <url>https://github.com/$repo/releases/latest/download/b_chronicles-linux-x64.zip</url>   
+              </platform>
+              <platform os="osx" arch="x64">
+                <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-x64.zip</url>   
+              </platform>
+              <platform os="osx" arch="arm64">
+                <url>https://github.com/$repo/releases/latest/download/b_chronicles-osx-arm64.zip</url>   
+              </platform>
+            </platforms>
+          </item>
+          "@ | Out-File -FilePath version.xml -Encoding utf8
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            b_chronicles-win-x64.zip
+            b_chronicles-linux-x64.zip
+            b_chronicles-osx-x64.zip
+            b_chronicles-osx-arm64.zip
+            version.xml
+            changelog.md
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body: |
+            Automated release for ${{ github.sha }}
+
+            ## 🧾 Changelog
+            ```
+            ${{ steps.changelog.outputs.changelog }}
+            ```
+
+            Full changelog also available in `changelog.md`.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
