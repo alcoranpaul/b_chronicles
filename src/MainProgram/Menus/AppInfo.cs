@@ -19,7 +19,13 @@ public class AppInfo : Menu
 
 
         string appName = $"App: {Assembly.GetEntryAssembly()?.GetName().Name}";
-        string appVersion = $"Version: {Assembly.GetEntryAssembly()?.GetName().Version}";
+        string appVersion = $"Version: {Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion}";
+
+        // Strip metadata after '+'
+        if (!string.IsNullOrEmpty(appVersion) && appVersion.Contains('+'))
+        {
+            appVersion = appVersion.Split('+')[0];
+        }
         string developer = $"Developed by: {Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company}";
 
 
