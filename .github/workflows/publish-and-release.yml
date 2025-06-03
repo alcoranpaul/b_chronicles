@@ -27,15 +27,31 @@ jobs:
       - name: Get Changelog from Git Log
         id: changelog
         run: |
-          # Get the latest tag that points to an ancestor of HEAD
-          $lastTag = git describe --tags --match "v*" --abbrev=0 HEAD^{} 2>$null
+          # Fetch all tags (needed for accurate comparison)
+          git fetch --tags
 
-          if (-not $lastTag) {
-              Write-Output "No previous tag found. Showing all commits since the beginning of the project."
-              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short $($lastTag)..HEAD
+          # Get the latest tag
+          $latestTag = git describe --tags --match "v*" --abbrev=0 HEAD
+
+          if (-not $latestTag) {
+              Write-Output "No tags found. Showing all commits."
+              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short
+              echo "Changelog:`n$changelog" | Out-File -FilePath changelog.md -Encoding utf8
+              echo "changelog<<EOF" >> $env:GITHUB_OUTPUT
+              echo "$changelog" >> $env:GITHUB_OUTPUT
+              echo "EOF" >> $env:GITHUB_OUTPUT
+              exit 0
+          }
+
+          # Get previous tag before latest tag
+          $previousTag = git describe --tags --match "v*" --abbrev=0 "$latestTag^" 2>$null
+
+          if (-not $previousTag) {
+              Write-Output "Only one tag found. Showing all commits since $latestTag"
+              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short $latestTag
           } else {
-              Write-Output "Found previous tag: $lastTag. Generating changelog..."
-              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short $($lastTag)..HEAD
+              Write-Output "Generating changelog between $previousTag and $latestTag"
+              $changelog = git log --no-merges --pretty=format:"* [%ad] %s (%an)%n  - %H" --date=short "$previousTag..$latestTag"
           }
 
           echo "Changelog:`n$changelog" | Out-File -FilePath changelog.md -Encoding utf8
