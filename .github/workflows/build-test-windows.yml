@@ -1,0 +1,36 @@
+name: Build Test (Windows)
+
+on:
+  push:
+    branches-ignore:
+      - "master"
+  pull_request:
+    branches-ignore:
+      - "master"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Build Project - Windows
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build Project
+        run: dotnet build -c Release --no-restore
+
+      - name: Print OS Info
+        run: |
+          echo "Running on Windows"
+          systeminfo | findstr /C:"OS Name" /C:"OS Version"
+          echo "Dotnet runtime:"
+          dotnet --info

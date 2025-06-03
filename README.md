@@ -4,6 +4,13 @@ Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. Th
 
 Video Demo: https://www.youtube.com/watch?v=bdNx5X-w5aY
 
+## Status
+- [![Release All Platforms Build](https://github.com/alcoranpaul/b_chronicles/actions/workflows/publish-and-release.yml/badge.svg?branch=main&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/publish-and-release.yml)
+- [![Test Linux](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-linux.yml/badge.svg?branch=main&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-linux.yml)
+- [![Test MacOS](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-macos.yml/badge.svg?branch=main&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-macos.yml)
+- [![Test Windows(https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-windows.yml/badge.svg?branch=main&event=push)](https://github.com/alcoranpaul/b_chronicles/actions/workflows/build-test-windows.yml)
+
+
 ## Supported Platforms
 - **Windows**: The application is primarily developed for Windows using .NET 8.0.
 - **Linux/macOS**: The application does run on Linux and macOS.
