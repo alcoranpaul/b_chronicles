@@ -2,6 +2,8 @@
 
 Bible Chronicles is an ADHD-friendly Bible reader with gamification elements. The application allows users to read Bible passages, complete typing sessions, and unlock characters, traits, and events as you progress through the Bible.
 
+Video Demo: https://www.youtube.com/watch?v=bdNx5X-w5aY
+
 ## Supported Platforms
 - **Windows**: The application is primarily developed for Windows using .NET 8.0.
 - **Linux/macOS**: The application does run on Linux and macOS.
