@@ -1,4 +1,7 @@
+#nullable enable
+using System;
 using Microsoft.Win32;
+
 namespace main;
 
 public static class StartupManager
@@ -6,6 +9,7 @@ public static class StartupManager
     private static readonly string AppName = "BibleChronicles";
     private static readonly string RunKeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 
+#if WINDOWS
     public static void AddAppToStartup()
     {
         string exePath = Environment.ProcessPath!;
@@ -63,4 +67,24 @@ public static class StartupManager
             LogError("Failed to remove from startup: " + ex.Message);
         }
     }
+#else
+    // No-op stubs for non-Windows platforms
+    public static void AddAppToStartup()
+    {
+        LogInfo("Startup management is only supported on Windows.");
+        Print("Startup management is only supported on Windows.");
+    }
+
+    public static void RemoveAppFromStartup()
+    {
+        LogInfo("Startup management is only supported on Windows.");
+        Print("Startup management is only supported on Windows.");
+    }
+#endif
+
+    // Dummy implementations of Log/Print methods for context
+    private static void LogInfo(string message) => Console.WriteLine(message);
+    private static void LogError(string message) => Console.Error.WriteLine(message);
+    private static void LogWarning(string message) => Console.WriteLine("WARNING: " + message);
+    private static void Print(string message) => Console.WriteLine(message);
 }
