@@ -79,9 +79,4 @@ public static class StartupManager
     }
 #endif
 
-    // Dummy implementations of Log/Print methods for context
-    private static void LogInfo(string message) => Console.WriteLine(message);
-    private static void LogError(string message) => Console.Error.WriteLine(message);
-    private static void LogWarning(string message) => Console.WriteLine("WARNING: " + message);
-    private static void Print(string message) => Console.WriteLine(message);
 }
