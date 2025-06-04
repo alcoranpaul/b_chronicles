@@ -23,7 +23,7 @@ public class Book
 
         if (allChapterFiles == null || allChapterFiles.Length <= 0)
         {
-            LogError($"No files in direcotyr");
+            LogCritical($"Missing JSON files for book: {Name}. Consider downloading all books in settings.");
             return;
         }
 

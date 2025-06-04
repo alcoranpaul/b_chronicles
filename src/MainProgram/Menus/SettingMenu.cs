@@ -20,6 +20,30 @@ public class SettingsMenu : Menu
             await schedulerMenu.ShowAsync();
         });
 
+        Options option3 = new Options("Download all Bible books", async () =>
+        {
+            try
+            {
+                using HttpClient httpClient = new HttpClient();
+                var fetcher = new DataFetcher.BibleDataFetcher(httpClient);
+                LogInfo($"Downloading Bible data...");
+                bool success = await fetcher.FetchBibleDataComplete();
+                if (success)
+                {
+                    LogDebug("Downloading Done!");
+                    _stateManager.ChangeState(GameStateManager.State.MainMenu);
+                }
+                else
+                {
+                    LogError("Failed to download Bible data.");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError($"Exception during Bible download: {ex}");
+            }
+        });
+
 
         Options exitOption = new("Exit", () =>
        {
@@ -29,7 +53,7 @@ public class SettingsMenu : Menu
 
 
         if (Utils.PlatformHelper.IsWindows())
-            await Show("Settings", shouldClearPrev: true, option1, option2, exitOption);
+            await Show("Settings", shouldClearPrev: true, option1, option2, option3, exitOption);
         else
             await Show("Settings", shouldClearPrev: true, option1, exitOption);
     }

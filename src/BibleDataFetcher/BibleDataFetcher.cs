@@ -143,6 +143,93 @@ public class BibleDataFetcher
         return overallSuccess;
     }
 
+    public async Task<bool> DownloadBook(BookNames book)
+    {
+        using var httpClient = new HttpClient();
+        var fetcher = new BibleDataFetcher(httpClient);
+
+        int chapter = 1;
+        bool bookComplete = false;
+        int consecutiveFailures = 0;
+        const int maxFailures = 3;
+
+        while (!bookComplete)
+        {
+            try
+            {
+                bool success = await fetcher.FetchBibleDataAsync(book, chapter).ConfigureAwait(false);
+
+                if (success)
+                {
+                    Console.WriteLine($"Downloaded chapter {chapter} of {book}");
+                    consecutiveFailures = 0;
+                    chapter++;
+
+                    await Task.Delay(200).ConfigureAwait(false);
+                }
+                else
+                {
+                    consecutiveFailures++;
+                    Console.WriteLine($"Failed to download chapter {chapter} of {book} (attempt {consecutiveFailures}/{maxFailures})");
+
+                    if (consecutiveFailures >= maxFailures)
+                    {
+                        if (chapter > 1)
+                        {
+                            Console.WriteLine($"Assuming end of {book} at chapter {chapter - 1}");
+                            bookComplete = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Aborting {book} - no chapters downloaded");
+                            bookComplete = true;
+                        }
+                    }
+                    else
+                    {
+                        await Task.Delay(500).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Console.WriteLine($"HTTP error downloading chapter {chapter} of {book}: {httpEx.Message}");
+                consecutiveFailures++;
+
+                if (consecutiveFailures >= maxFailures)
+                {
+                    Console.WriteLine($"Aborting {book} - too many HTTP errors");
+                    bookComplete = true;
+                }
+                else
+                {
+                    await Task.Delay(1000).ConfigureAwait(false);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine($"Timeout downloading chapter {chapter} of {book}");
+                consecutiveFailures++;
+
+                if (consecutiveFailures >= maxFailures)
+                {
+                    Console.WriteLine($"Aborting {book} - too many timeouts");
+                    bookComplete = true;
+                }
+                else
+                {
+                    await Task.Delay(1000).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error downloading chapter {chapter} of {book}: {ex}");
+                bookComplete = true;
+            }
+        }
+
+        return bookComplete && chapter > 1;
+    }
 
     public async Task<bool> FetchBibleDataAsync(BookNames book, int chapter, int? verse = null)
     {
