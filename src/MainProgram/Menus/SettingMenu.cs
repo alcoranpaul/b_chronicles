@@ -45,16 +45,15 @@ public class SettingsMenu : Menu
         });
 
 
-        Options exitOption = new("Exit", () =>
+        Options exitOption = new("Back to Main Menu", () =>
        {
-           LogDebug("Requested to end application");
-           _stateManager.ChangeState(GameStateManager.State.End);
+           _stateManager.ChangeState(GameStateManager.State.MainMenu);
        });
 
 
         if (Utils.PlatformHelper.IsWindows())
             await Show("Settings", shouldClearPrev: true, option1, option2, option3, exitOption);
         else
-            await Show("Settings", shouldClearPrev: true, option1, exitOption);
+            await Show("Settings", shouldClearPrev: true, option1, option3, exitOption);
     }
 }
