@@ -23,7 +23,7 @@ public class Book
 
         if (allChapterFiles == null || allChapterFiles.Length <= 0)
         {
-            LogError($"No files in direcotyr");
+            LogError($"Cannot find JSON files for book: {Name}");
             return;
         }
 
