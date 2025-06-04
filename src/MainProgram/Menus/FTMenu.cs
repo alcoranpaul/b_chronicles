@@ -75,6 +75,6 @@ public class FTMenu : Menu
 
 
 
-        await Show("Welcome to Bible Chronicles!", [option1, exitOption], shouldClearPrev: true, ["The program requires that these dependencies to be installed!"]);
+        await Show("Welcome to Bible Chronicles!", [option1, option2, exitOption], shouldClearPrev: true, ["The program requires that these dependencies to be installed!"]);
     }
 }
