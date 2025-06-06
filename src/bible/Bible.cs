@@ -78,7 +78,7 @@ public class Book
 
     private static string[] ExtractJsonFiles(string convertedBookName)
     {
-        string book_file_dir = Path.Combine("json", "books", $"{convertedBookName}");
+        string book_file_dir = Path.Combine(Utils.PathDirHelper.GetBooksDirectory(), $"{convertedBookName}");
 
         Directory.CreateDirectory(path: book_file_dir);
         string[] allChapterFiles = Directory.GetFiles(book_file_dir, "*.json");

@@ -271,7 +271,7 @@ public class BibleDataFetcher
             var cleanedData = CleanJsonData(root);
 
             // Save to file
-            string outputDir = Path.Combine("json", "books", bookName);
+            string outputDir = Path.Combine(Utils.PathDirHelper.GetBooksDirectory(), bookName);
             Directory.CreateDirectory(outputDir);
 
             string fileName = verse.HasValue
