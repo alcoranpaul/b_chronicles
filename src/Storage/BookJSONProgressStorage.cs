@@ -12,7 +12,7 @@ public sealed class BookJsonProgressStorage : IBookProgressStorage
 
     public BookJsonProgressStorage()
     {
-        _filePath = Path.Combine("json", "player", $"bible_progress.json");
+        _filePath = Path.Combine(Utils.PathDirHelper.GetPlayerDirectory(), $"bible_progress.json");
 
         _jsonOptions = new JsonSerializerOptions
         {
