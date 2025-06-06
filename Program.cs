@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using Bible;
 using DataFetcher;
 using Player;
@@ -8,41 +11,45 @@ namespace main;
 
 static class Program
 {
-    private static BMain bmain;
+    private static BMain? bmain;
     private static readonly FTMenu _ftMenu = new();
+
     static async Task Main()
     {
         try
         {
             Console.CursorVisible = false;
-
             Console.Clear();
+
             ConfigureLogging();
+
             await FirstTimeMenu();
+
             bmain = BMain.Instance;
             await bmain.Run();
         }
         catch (Exception ex)
         {
-            LogError($"Error has been cathced: {ex}");
+            LogError($"Error has been caught: {ex}");
         }
-
-        RestoreConsoleSettings();
+        finally
+        {
+            RestoreConsoleSettings();
+        }
     }
 
     private static async Task FirstTimeMenu()
     {
-        string jsonDir = Path.Combine("json", "books");
+        string jsonDir = PathDirHelper.GetBooksDirectory();
+
         if (!Directory.Exists(jsonDir))
         {
-            LogDebug($"Application has launched for the first time!");
+            LogInfo($"Application has launched for the first time!: {jsonDir}");
+            Print($"jsonDir: {jsonDir}");
             await _ftMenu.ShowAsync();
-
         }
-
-
-
     }
+
 
     private static void ConfigureLogging()
     {
