@@ -48,9 +48,10 @@ public static class LoggingConfig
 
         if (enableFileLogging)
         {
+            string pathToLogs = Path.Combine(PathDirHelper.GetLogsDirectory(), $"log_{safeTimestamp}.txt");
             // Add file logging if enabled
             loggerConfig.WriteTo.File(
-                $"logs/log_{safeTimestamp}.txt",
+                pathToLogs,
                 rollingInterval: RollingInterval.Day,
                 outputTemplate: "{Timestamp:HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}",
                 flushToDiskInterval: TimeSpan.FromSeconds(1)
