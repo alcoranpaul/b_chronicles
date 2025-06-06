@@ -59,7 +59,7 @@ public class UnlockManager
 
     private static UnlockData? FindUnlockData(BookNames book, string fileName)
     {
-        string filePath = Path.Combine("json", "unlocks", $"{book.ToString().ToLower()}", fileName);
+        string filePath = Path.Combine(Utils.PathDirHelper.GetUnlocksDirectory(), $"{book.ToString().ToLower()}", fileName);
 
         if (!File.Exists(filePath))
         {
