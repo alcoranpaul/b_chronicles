@@ -24,5 +24,6 @@ public static class PathDirHelper
     public static string GetBooksDirectory() => Path.Combine(GetAppDirectory(), "json", "books");
     public static string GetPlayerDirectory() => Path.Combine(GetAppDirectory(), "json", "player");
     public static string GetUnlocksDirectory() => Path.Combine(GetAppDirectory(), "json", "unlocks");
+    public static string GetLogsDirectory() => Path.Combine(GetAppDirectory(), "logs");
 
 }
